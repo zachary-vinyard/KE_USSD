@@ -1186,7 +1186,7 @@ var HospitalRegionText = function(){
     else {sayText("Tafadhali chagua mkoa wako:\n1) Central\n2) Coast\n3) Eastern\n4) Nairobi\n5) North Eastern\n6) Nyanza\n7) Rift Valley\n8) Western")}
 };
 // Start logic flow
-function global.main() {
+global.main = function () {
     LogSessionID();
     SplashMenuText();
     promptDigits("SplashMenu", {submitOnHash: true, maxDigits: 8, timeout: 5});
