@@ -214,6 +214,7 @@ var GetPrepaymentAmount = function(client){
         }
     }
     else {return 500}
+    // line
 };
 var FAWActive = function (districtname){
     var Table = project.getOrCreateDataTable("FAW Districts");
@@ -1676,7 +1677,7 @@ addInputHandler("JITTUAccNum", function(JITTUAccNum) {
     else{
         if(RosterClientVal(JITTUAccNum)){
             JIT_client = RosterClientGet(JITTUAccNum);
-            state.vars.JIT_client = JSON.stringify(JIT_client);
+            state.vars.JIT_client = JSON.stringify(TrimClientJSON(JIT_client));
             client = JSON.parse(state.vars.client);
             if (client.GroupId == JIT_client.GroupId){
                 var FarmerSeason = JIT_client.BalanceHistory[0].SeasonName;
@@ -1852,7 +1853,7 @@ addInputHandler("JITEAccNum", function(JITE_AccNum){
                 if (GetBalance(JITE_client, LastSeason)>0){NotBanned = false}
                 if (client.DistrictId == JITE_client.DistrictId && NotBanned){
                     if (JITE_client.BalanceHistory[0].SeasonName != CurrentSeasonName){
-                        state.vars.JITE_client = JSON.stringify(JITE_client);
+                        state.vars.JITE_client = JSON.stringify(TrimClientJSON(JITE_client));
                         var JITEOrderOptions = JITEGetOrderOptions()
                         JITEBundleSelectText(JITEOrderOptions);
                         promptDigits("JITEBundleSelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
