@@ -63,10 +63,20 @@ var FAWUnitPrice = 840;
 var FAWMaxOrders = 2;
 var StaffDistrict = "KENYA STAFF";
 // Setting global functions
-var InteractionCounter = function(){
-    if (typeof(state.vars.InteractionCount) == 'undefined') {state.vars.InteractionCount = 1}
-    else{state.vars.InteractionCount = state.vars.InteractionCount +1}
-    call.vars.InteractionCount = state.vars.InteractionCount;
+var InteractionCounter = function(input){
+    try{
+        if (typeof(state.vars.InteractionCount) == 'undefined') {state.vars.InteractionCount = 1}
+        else{state.vars.InteractionCount = state.vars.InteractionCount +1}
+        call.vars.InteractionCount = state.vars.InteractionCount;
+        if (typeof(input) !== 'undefined') {
+            var Now = moment().format('X');
+            var varString = "call.vars.TimeStamp_"+input+"= Now";
+            eval(varString);
+        }
+    }
+    catch(err) {
+        console.log("Error occurred in interaction counter")
+      }
 };
 var IsGl = function(accnum){
     var GLTable = project.getOrCreateDataTable("GroupLeaders");
@@ -1248,7 +1258,7 @@ global.main = function () {
 }
 addInputHandler("SplashMenu", function(SplashMenu) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SplashMenu");
     ClientAccNum = SplashMenu;
     if (SplashMenu == "99"){
         ChangeLang();
@@ -1283,7 +1293,7 @@ addInputHandler("SplashMenu", function(SplashMenu) {
 });
 addInputHandler("MainMenu", function(MainMenu) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("MainMenu");
     client = JSON.parse(state.vars.client);
     if (MainMenu== "99"){
         ChangeLang();
@@ -1379,14 +1389,14 @@ addInputHandler("MainMenu", function(MainMenu) {
 });
 addInputHandler("BackToMain", function(input) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("BackToMain");
     var client = JSON.parse(state.vars.client);
     MainMenuText (client);
     promptDigits("MainMenu", {submitOnHash: true, maxDigits: 2, timeout: 5});
 });
 addInputHandler("ContinueToPayment", function(ContinueToPayment) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("ContinueToPayment");
     client = JSON.parse(state.vars.client);
     PaymentMenuText (client.AccountNumber);
     promptDigits("PaymentAmount", {submitOnHash: true, maxDigits: 5, timeout: 5});
@@ -1394,7 +1404,7 @@ addInputHandler("ContinueToPayment", function(ContinueToPayment) {
 });
 addInputHandler("PaymentAmount", function(PaymentAmount) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("PaymentAmount");
     if (PaymentAmount >= 10 && PaymentAmount < 70000){
         client = JSON.parse(state.vars.client);
         if (RosterColRequest (client.AccountNumber,PaymentAmount)){
@@ -1417,7 +1427,7 @@ addInputHandler("PaymentAmount", function(PaymentAmount) {
 });
 addInputHandler("FOLocRegion", function(Region) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocRegion");
     LocationNotKnown(Region);
     if (Region ==1 || Region == 2 || Region == 3 || Region == 4){
         var LocTable = project.getOrCreateDataTable("FO_Locator_Counties");
@@ -1460,7 +1470,7 @@ addInputHandler("FOLocRegion", function(Region) {
 });
 addInputHandler("FOLocCounty", function(County) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocCounty");
     LocationNotKnown(County);
     var NextSelected = FOLocatorNextSelect(County);
     if (state.vars.MenuNext && NextSelected){
@@ -1522,7 +1532,7 @@ addInputHandler("FOLocCounty", function(County) {
 });
 addInputHandler("FOLocSubCounty", function(SubCounty) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocSubCounty");
     LocationNotKnown(SubCounty);
     var NextSelected = FOLocatorNextSelect(SubCounty);
     if (state.vars.MenuNext &&  NextSelected){
@@ -1584,7 +1594,7 @@ addInputHandler("FOLocSubCounty", function(SubCounty) {
 });
 addInputHandler("FOLocWard", function(Ward) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocWard");
     LocationNotKnown(Ward);
         var LocValid = false;
     var NextSelected = FOLocatorNextSelect(Ward);
@@ -1654,7 +1664,7 @@ addInputHandler("FOLocWard", function(Ward) {
 });
 addInputHandler("FOLocSite", function(Site) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocSite");
     var LocValid = false;
     LocationNotKnown(Site);
     var NextSelected = FOLocatorNextSelect(Site);
@@ -1686,7 +1696,7 @@ addInputHandler("FOLocSite", function(Site) {
 });
 addInputHandler("FOLocConfrim", function(Confirm) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FOLocConfrim");
     if (Confirm == "1"){
         var FOLocatorLabel = project.getOrCreateLabel("FO Locator");
         var FarmerSMSContent = FOLocatorFarmerSMS();
@@ -1723,7 +1733,7 @@ addInputHandler("FOLocConfrim", function(Confirm) {
 });
 addInputHandler("JITTUAccNum", function(JITTUAccNum) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITTUAccNum");
     var JITEOrder = JITECheckPreviousAccNum(JITTUAccNum)
     if (JITTUAccNum == "1"){
         var client = JSON.parse(state.vars.client);
@@ -1770,7 +1780,7 @@ addInputHandler("JITTUAccNum", function(JITTUAccNum) {
 });
 addInputHandler("JITTUBundleSelect", function(BundleSelect){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITTUBundleSelect");
     if (BundleSelect =="9"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -1805,7 +1815,7 @@ addInputHandler("JITTUBundleSelect", function(BundleSelect){
 });
 addInputHandler("JITTUVarietySelect", function(VarietySelected) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITTUVarietySelect");
     if (VarietySelected == "9"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -1839,7 +1849,7 @@ addInputHandler("JITTUVarietySelect", function(VarietySelected) {
 });
 addInputHandler("JITTUConfirm", function(Confirm){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITTUConfirm");
     var bundleSelected = JSON.parse(state.vars.bundleselect)
     if (Confirm == "9"){
         var client = JSON.parse(state.vars.client);
@@ -1860,7 +1870,7 @@ addInputHandler("JITTUConfirm", function(Confirm){
 });
 addInputHandler("ContinueToJITTUBundleSelect", function(Continue) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("ContinueToJITTUBundleSelect");
     if(Continue =="2") {
         JIT_client = JSON.parse(state.vars.JIT_client);
         var orderoverview = JITTURetrieveOrders(JIT_client.AccountNumber);
@@ -1878,7 +1888,7 @@ addInputHandler("ContinueToJITTUBundleSelect", function(Continue) {
 });
 addInputHandler("ViewJITOrder", function(JITTU_accNum) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("ViewJITOrder");
     if (JITTU_accNum == "1"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -1893,7 +1903,7 @@ addInputHandler("ViewJITOrder", function(JITTU_accNum) {
 });
 addInputHandler("JITEAccNum", function(JITE_AccNum){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITEAccNum");
     if (JITE_AccNum == "0"){
         JITEFirstNameText();
         promptDigits("JITEFirstName", {submitOnHash: true, maxDigits: 10, timeout: 5});
@@ -1937,19 +1947,19 @@ addInputHandler("JITEAccNum", function(JITE_AccNum){
 });
 addInputHandler("JITEFirstName", function(JITE_FirstName){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITEFirstName");
     JITELastNameText();
     promptDigits("JITESecondName", {submitOnHash: true, maxDigits: 10, timeout: 5});
 });
 addInputHandler("JITESecondName", function(JITE_SecondName){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITESecondName");
     JITENationalIDText();
     promptDigits("JITENationalID", {submitOnHash: true, maxDigits: 10, timeout: 5});
 });
 addInputHandler("JITENationalID", function(JITE_NationalID){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITENationalID");
     if (ValNationalID(JITE_NationalID)){
         var alreadyOrdered = JITECheckPreviousNationalID(JITE_NationalID);
         if (alreadyOrdered) {
@@ -1969,7 +1979,7 @@ addInputHandler("JITENationalID", function(JITE_NationalID){
 });
 addInputHandler("JITEBundleSelect", function(JITE_BundleSelect){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITEBundleSelect");
     if (JITE_BundleSelect =="9"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -2001,7 +2011,7 @@ addInputHandler("JITEBundleSelect", function(JITE_BundleSelect){
 });
 addInputHandler("JITEVarietySelect", function(JITE_VarSelect){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITEVarietySelect");
     if (JITE_VarSelect == "9"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -2033,7 +2043,7 @@ addInputHandler("JITEVarietySelect", function(JITE_VarSelect){
 });
 addInputHandler("JITEConfirm", function(Confirm){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("JITEConfirm");
     if (Confirm == "9"){
         var client = JSON.parse(state.vars.client);
         MainMenuText (client);
@@ -2063,7 +2073,7 @@ addInputHandler("JITEConfirm", function(Confirm){
 });
 addInputHandler("FAWOrder", function(Order){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FAWOrder");
     var client = JSON.parse(state.vars.client);
     if (Order =="9"){
         MainMenuText (client);
@@ -2088,7 +2098,7 @@ addInputHandler("FAWOrder", function(Order){
 });
 addInputHandler("FAWConfirm", function(confirm){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("FAWConfirm");
     var client = JSON.parse(state.vars.client);
     if (confirm == "1"){
             FAWCreateOrder (client, state.vars.FAWOrder)
@@ -2103,7 +2113,7 @@ addInputHandler("FAWConfirm", function(confirm){
 });
 addInputHandler("SolarMenu", function(Menu){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SolarMenu");
     var client = JSON.parse(state.vars.client);
     if (Menu =="9"){
         MainMenuText (client);
@@ -2157,7 +2167,7 @@ addInputHandler("SolarMenu", function(Menu){
 });
 addInputHandler("SerialRegister", function(Serial){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SerialRegister");
     var client = JSON.parse(state.vars.client);
     if (Serial =="9"){
         MainMenuText (client);
@@ -2195,7 +2205,7 @@ addInputHandler("SerialRegister", function(Serial){
 });
 addInputHandler("SerialCode", function(Serial){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SerialCode");
     var client = JSON.parse(state.vars.client);
     if (Serial =="9"){
         MainMenuText (client);
@@ -2213,14 +2223,14 @@ addInputHandler("SerialCode", function(Serial){
 });
 addInputHandler("SHSCodeContinue", function(Input){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SHSCodeContinue");
     var client = JSON.parse(state.vars.client);
     MainMenuText (client);
     promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
 });
 addInputHandler("ReportIssueOrBackToMain", function(Input){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("ReportIssueOrBackToMain");
     state.vars.issuetype = "SHS";
     var client = JSON.parse(state.vars.client);
     if (Input =="99"){
@@ -2234,7 +2244,7 @@ addInputHandler("ReportIssueOrBackToMain", function(Input){
 });
 addInputHandler("CallBackPN", function(Input){
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("CallBackPN");
     var client = JSON.parse(state.vars.client);
     if (Input =="9"){
         MainMenuText (client);
@@ -2253,7 +2263,7 @@ addInputHandler("CallBackPN", function(Input){
 });
 addInputHandler('InsuranceMenu', function(input) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter('InsuranceMenu');
     var client = JSON.parse(state.vars.client);
     if (input =="9"){
         MainMenuText (client);
@@ -2266,7 +2276,7 @@ addInputHandler('InsuranceMenu', function(input) {
 });
 addInputHandler('HospitalRegion', function(input) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter('HospitalRegion');
     if(input == 1 ||input == 2 || input == 3 || input == 4 ||input == 5 || input == 6 || input == 7 || input == 8){
         state.vars.LocMenuText = HospitalTownsRetrieve(input);
         sayText(state.vars.LocMenuText);
@@ -2279,8 +2289,7 @@ addInputHandler('HospitalRegion', function(input) {
 });
 addInputHandler('HospitalTown', function(input) {
     LogSessionID();
-    InteractionCounter();
-    
+    InteractionCounter('HospitalTown');
     if (state.vars.MenuNext && input == "0"){
         state.vars.LocMenuText = LocationNext();
         sayText(state.vars.LocMenuText);
@@ -2298,7 +2307,7 @@ addInputHandler('HospitalTown', function(input) {
 });
 addInputHandler('Hospital', function(input) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter('Hospital');
     console.log(state.vars.LocMenuText);
     if (state.vars.MenuNext && input == 0){
         state.vars.LocMenuText = LocationNext();
@@ -2312,6 +2321,8 @@ addInputHandler('Hospital', function(input) {
 });
 
 addInputHandler('StaffMenu', function(input) {
+    LogSessionID();
+    InteractionCounter('StaffMenu');
     if (input == 1){
         StaffDaySelectText();
         promptDigits("DaySelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
@@ -2324,6 +2335,8 @@ addInputHandler('StaffMenu', function(input) {
 });
 
 addInputHandler('DaySelect', function(input) {
+    LogSessionID();
+    InteractionCounter('DaySelect');
     if (input == 1 || input == 2 || input ==3){
         StaffDayAmountText();
         promptDigits("DayAmount", {submitOnHash: true, maxDigits: 2, timeout: 5});
@@ -2339,6 +2352,8 @@ addInputHandler('DaySelect', function(input) {
 });
 
 addInputHandler('DayAmount', function(input) {
+    LogSessionID();
+    InteractionCounter('DayAmount');
     if (input == 1 || input == 2 || input ==3){
         var amount = input;
         var StaffDetail = GetStaffDetails(state.vars.payrollid);
