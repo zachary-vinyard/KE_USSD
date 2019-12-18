@@ -2342,7 +2342,7 @@ addInputHandler('DayAmount', function(input) {
         var amount = input;
         var StaffDetail = GetStaffDetails(state.vars.payrollid);
         StaffConfrimAbsenceText(StaffDetail.name);
-        StaffConfrimAbsenceEmail = function(StaffDetail.email, StaffDetail.name, call.vars.DaySelect, amount)
+        StaffConfrimAbsenceEmail(StaffDetail.email, StaffDetail.name, call.vars.DaySelect, amount)
         // place holder for email to HR
     }
     else if (input == 4){
