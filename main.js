@@ -765,9 +765,11 @@ var ValidPayRollID = function(payrollid){
 };
 
 var GetStaffDetails = function(payrollid){
+    console.log("Retrieving details for payroll id: "+ payrollid)
     var Table = project.getOrCreateDataTable("Staff");
     Cursor = Table.queryRows({vars: {'payrollid': payrollid}});
-    Cursor.limit(1)
+    Cursor.limit(1);
+    console.log(JSON.stringify(Row.vars));
     if (Cursor.hasNext){
         var Row = Cursor.next;
         var StaffDetail = {
