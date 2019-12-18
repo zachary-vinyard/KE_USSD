@@ -74,6 +74,9 @@ var InteractionCounter = function(input){
             eval(varString);
         }
     }
+    catch(err) {
+        console.log("Error occurred in interaction counter")
+      }
 };
 var IsGl = function(accnum){
     var GLTable = project.getOrCreateDataTable("GroupLeaders");
