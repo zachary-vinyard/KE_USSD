@@ -757,6 +757,30 @@ var InsuranceActive = function (districtname){
     if (Cursor.count()>0){return true}
     else {return false}
 };
+var ValidPayRollID = function(payrollid){
+    var Table = project.getOrCreateDataTable("Staff");
+    Cursor = Table.queryRows({vars: {'payrollid': payrollid}});
+    if (Cursor.count()>0){return true}
+    else {return false}
+};
+
+var GetStaffDetails = function(payrollid){
+    console.log("Retrieving details for payroll id: "+ payrollid)
+    var Table = project.getOrCreateDataTable("Staff");
+    Cursor = Table.queryRows({vars: {'payrollid': payrollid}});
+    Cursor.limit(1);
+    if (Cursor.hasNext()){
+        var Row = Cursor.next();
+        var StaffDetail = {
+            'name': Row.vars.firstname,
+            'email': Row.vars.emailadress,
+            'payrollid': Row.vars.payrollid,
+        };
+        return StaffDetail;
+    }
+    else {return false}
+}
+
 //MAIN FUNCTIONS OR GENERIC TEXT
 var SplashMenuText = function (){
     if (GetLang()){sayText("Welcome to the OAF portal. Please enter the 8 digit account number you use for repayment\nPress 0 if you are not our client\n99) Swahili")}
@@ -1186,6 +1210,36 @@ var HospitalRegionText = function(){
     if (GetLang()){sayText("Please choose your region:\n1) Central\n2) Coast\n3) Eastern\n4) Nairobi\n5) North Eastern\n6) Nyanza\n7) Rift Valley\n8) Western")}
     else {sayText("Tafadhali chagua mkoa wako:\n1) Central\n2) Coast\n3) Eastern\n4) Nairobi\n5) North Eastern\n6) Nyanza\n7) Rift Valley\n8) Western")}
 };
+
+//Staff Menu
+var StaffMenuText = function(){
+    sayText("Staff Menu\n1) Report Unexpected Absence");
+};
+var StaffDaySelectText = function(){
+    sayText("For which day are you reporting your first day of absense?\n1) Today\n2) Tomorrow\n3) Yesterday\n0) Cancel");
+};
+var StaffDayAmountText = function(){
+    sayText("For how many days do you expect to be absent from work?\n1) 1 day\n2) 2 days\n3) 3 days\n4) 4 days or more\n0) Cancel");
+};
+var StaffConfrimAbsenceText = function(name){
+    sayText("Thank you "+name+" for reporting your work absence. You will receive an SMS and email confirmation shortly with further instructions. We wish you well.");
+};
+var StaffCallForAbsenceText = function(name){
+    sayText("For absences of more than 3 days, notify your manager directly or an HR representative through the Staff Support Line at 800 720 377. We wish you well.");
+};
+
+var StaffConfrimAbsenceEmail = function(email, firstname, startday, amount){
+    var startdaydesc = "Today";
+    if (startday == 2){startdaydesc = "Yesterday"}
+    else if (startday == 3){startdaydesc = "Tomorrow"}
+    var subject = "Absence request received"
+    var body = "Hello "+firstname+"\n\nThank you for using our USSD Staff Menu to report your unexpected absence from work, beginning "+startdaydesc+" and expected to last "+amount+" days. Per HR policy, you must also alert your manager of your absence as soon as possible, and submit a Leave Form upon return to work.\n\nIf you have any questions or concerns about this or any other HR-related matter, please don't hesitate to call the OAF Staff Support Line at 0800 720 377.\n\nTogether in Service,\n\nKenya HR"
+    sendEmail(email, subject, body);
+};
+var StaffConfrimAbsenceEmailHR = function(){
+    console.log("Pending foprmat");
+};
+
 // Start logic flow
 global.main = function () {
     LogSessionID();
@@ -1204,7 +1258,8 @@ addInputHandler("SplashMenu", function(SplashMenu) {
     else if (SplashMenu == "0"){
         FOLocatorRegionText();
         promptDigits("FOLocRegion", {submitOnHash: true, maxDigits: 1, timeout: 5});
-    } 
+    }
+
     else {
         if (RosterClientVal(ClientAccNum)){
             console.log("SuccessFully Validated against Roster");
@@ -1214,6 +1269,11 @@ addInputHandler("SplashMenu", function(SplashMenu) {
             MainMenuText (client);
             promptDigits("MainMenu", {submitOnHash: true, maxDigits: 8, timeout: 5});
         }
+        else if (ValidPayRollID(SplashMenu)){
+            state.vars.payrollid = SplashMenu;
+            StaffMenuText();
+            promptDigits("StaffMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        }  
         else{
             console.log("account number not valid");
             SplashMenuFailure();
@@ -2250,3 +2310,53 @@ addInputHandler('Hospital', function(input) {
         promptDigits("Hospital", {submitOnHash: true, maxDigits: 2, timeout: 5});
     }
 });
+
+addInputHandler('StaffMenu', function(input) {
+    if (input == 1){
+        StaffDaySelectText();
+        promptDigits("DaySelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        StaffMenuText();
+        promptDigits("StaffMenu", {submitOnHash: true, maxDigits: 1, timeout: 5}); 
+    }
+    
+});
+
+addInputHandler('DaySelect', function(input) {
+    if (input == 1 || input == 2 || input ==3){
+        StaffDayAmountText();
+        promptDigits("DayAmount", {submitOnHash: true, maxDigits: 2, timeout: 5});
+    }
+    else if (input == 0 ){
+        sayText("Thank you");
+        hangUp();
+    }
+    else{
+        StaffDaySelectText();
+        promptDigits("DaySelect", {submitOnHash: true, maxDigits: 2, timeout: 5});
+    }
+});
+
+addInputHandler('DayAmount', function(input) {
+    if (input == 1 || input == 2 || input ==3){
+        var amount = input;
+        var StaffDetail = GetStaffDetails(state.vars.payrollid);
+        StaffConfrimAbsenceText(StaffDetail.name);
+        StaffConfrimAbsenceEmail(StaffDetail.email, StaffDetail.name, call.vars.DaySelect, amount)
+        // place holder for email to HR
+    }
+    else if (input == 4){
+        StaffCallForAbsenceText();
+        hangUp();
+    }
+    else if (input == 0 ){
+        sayText("Thank you");
+        hangUp();
+    }
+    else {
+        StaffDayAmountText();
+        promptDigits("DayAmount", {submitOnHash: true, maxDigits: 2, timeout: 5});
+    }
+});
+
