@@ -63,10 +63,15 @@ var FAWUnitPrice = 840;
 var FAWMaxOrders = 2;
 var StaffDistrict = "KENYA STAFF";
 // Setting global functions
-var InteractionCounter = function(){
+var InteractionCounter = function(input){
     if (typeof(state.vars.InteractionCount) == 'undefined') {state.vars.InteractionCount = 1}
     else{state.vars.InteractionCount = state.vars.InteractionCount +1}
     call.vars.InteractionCount = state.vars.InteractionCount;
+    if (typeof(input) !== 'undefined') {
+        var Now = moment().format('X');
+        var varString = "call.vars.TimeStamp_"+input+"= Now";
+        eval(varString);
+    }
 };
 var IsGl = function(accnum){
     var GLTable = project.getOrCreateDataTable("GroupLeaders");
@@ -1248,7 +1253,7 @@ global.main = function () {
 }
 addInputHandler("SplashMenu", function(SplashMenu) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("SplashMenu");
     ClientAccNum = SplashMenu;
     if (SplashMenu == "99"){
         ChangeLang();
@@ -1283,7 +1288,7 @@ addInputHandler("SplashMenu", function(SplashMenu) {
 });
 addInputHandler("MainMenu", function(MainMenu) {
     LogSessionID();
-    InteractionCounter();
+    InteractionCounter("MainMenu");
     client = JSON.parse(state.vars.client);
     if (MainMenu== "99"){
         ChangeLang();
