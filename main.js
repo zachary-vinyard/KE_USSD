@@ -1225,7 +1225,7 @@ var HospitalRegionText = function(){
 var StaffMenuText = function(){
     sayText("Staff Menu\n1) Report Unexpected Absence");
 };
-var StaffPayrollText = function{
+var StaffPayrollText = function(){
     sayText("Please enter you 5 digit payroll ID");
 };
 var StaffDaySelectText = function(){
