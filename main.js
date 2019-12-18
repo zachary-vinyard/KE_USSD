@@ -769,7 +769,6 @@ var GetStaffDetails = function(payrollid){
     var Table = project.getOrCreateDataTable("Staff");
     Cursor = Table.queryRows({vars: {'payrollid': payrollid}});
     Cursor.limit(1);
-    console.log(JSON.stringify(Row.vars));
     if (Cursor.hasNext()){
         var Row = Cursor.next();
         var StaffDetail = {
