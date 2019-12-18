@@ -1233,7 +1233,7 @@ var StaffConfrimAbsenceEmail = function(email, firstname, startday, amount){
     if (startday == 2){startdaydesc = "Yesterday"}
     else if (startday == 3){startdaydesc = "Tomorrow"}
     var subject = "Absence request received"
-    var body = "Hello "+firstname+"\n\nThank you for using our USSD Staff Menu to report your unexpected absence from work, beginning "+startdaydesc+" and expected to last"+amount+" days. Per HR policy, you must also alert your manager of your absence as soon as possible, and submit a Leave Form upon return to work.\n\nIf you have any questions or concerns about this or any other HR-related matter, please don't hesitate to call the OAF Staff Support Line at 0800 720 377.\n\nTogether in Service,\n\nKenya HR"
+    var body = "Hello "+firstname+"\n\nThank you for using our USSD Staff Menu to report your unexpected absence from work, beginning "+startdaydesc+" and expected to last "+amount+" days. Per HR policy, you must also alert your manager of your absence as soon as possible, and submit a Leave Form upon return to work.\n\nIf you have any questions or concerns about this or any other HR-related matter, please don't hesitate to call the OAF Staff Support Line at 0800 720 377.\n\nTogether in Service,\n\nKenya HR"
     sendEmail(email, subject, body);
 };
 var StaffConfrimAbsenceEmailHR = function(){
