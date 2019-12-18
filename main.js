@@ -770,8 +770,8 @@ var GetStaffDetails = function(payrollid){
     Cursor = Table.queryRows({vars: {'payrollid': payrollid}});
     Cursor.limit(1);
     console.log(JSON.stringify(Row.vars));
-    if (Cursor.hasNext){
-        var Row = Cursor.next;
+    if (Cursor.hasNext()){
+        var Row = Cursor.next();
         var StaffDetail = {
             'name': Row.vars.emailadress,
             'email': Row.vars.firstname,
