@@ -772,8 +772,8 @@ var GetStaffDetails = function(payrollid){
     if (Cursor.hasNext()){
         var Row = Cursor.next();
         var StaffDetail = {
-            'name': Row.vars.emailadress,
-            'email': Row.vars.firstname,
+            'name': Row.vars.firstname,
+            'email': Row.vars.emailadress,
             'payrollid': Row.vars.payrollid,
         };
         return StaffDetail;
