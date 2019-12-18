@@ -1274,7 +1274,7 @@ addInputHandler("SplashMenu", function(SplashMenu) {
     }
     else if (SplashMenu == "9"){
         StaffPayrollText();
-        promptDigits('StaffPayRoll', {submitOnHash: true, maxDigits: 1, timeout: 5});
+        promptDigits('StaffPayRoll', {submitOnHash: true, maxDigits: 5, timeout: 5});
     }
 
     else {
