@@ -1225,6 +1225,9 @@ var HospitalRegionText = function(){
 var StaffMenuText = function(){
     sayText("Staff Menu\n1) Report Unexpected Absence");
 };
+var StaffPayrollText = function{
+    sayText("Please enter you 5 digit payroll ID");
+};
 var StaffDaySelectText = function(){
     sayText("For which day are you reporting your first day of absense?\n1) Today\n2) Tomorrow\n3) Yesterday\n0) Cancel");
 };
@@ -1269,6 +1272,10 @@ addInputHandler("SplashMenu", function(SplashMenu) {
         FOLocatorRegionText();
         promptDigits("FOLocRegion", {submitOnHash: true, maxDigits: 1, timeout: 5});
     }
+    else if (SplashMenu == "9"){
+        StaffPayrollText();
+        promptDigits('StaffPayRoll', {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
 
     else {
         if (RosterClientVal(ClientAccNum)){
@@ -1279,11 +1286,6 @@ addInputHandler("SplashMenu", function(SplashMenu) {
             MainMenuText (client);
             promptDigits("MainMenu", {submitOnHash: true, maxDigits: 8, timeout: 5});
         }
-        else if (ValidPayRollID(SplashMenu)){
-            state.vars.payrollid = SplashMenu;
-            StaffMenuText();
-            promptDigits("StaffMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
-        }  
         else{
             console.log("account number not valid");
             SplashMenuFailure();
@@ -2319,6 +2321,20 @@ addInputHandler('Hospital', function(input) {
         promptDigits("Hospital", {submitOnHash: true, maxDigits: 2, timeout: 5});
     }
 });
+addInputHandler('StaffPayRoll', function(input) {
+    LogSessionID();
+    InteractionCounter('StaffPayRoll');
+    if (ValidPayRollID(input)){
+        state.vars.payrollid = input;
+        StaffMenuText();
+        promptDigits("StaffMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        StaffPayrollText();
+        promptDigits("StaffPayRoll", {submitOnHash: true, maxDigits: 5, timeout: 5});
+    }
+});
+
 
 addInputHandler('StaffMenu', function(input) {
     LogSessionID();
