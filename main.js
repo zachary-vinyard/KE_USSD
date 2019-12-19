@@ -1235,7 +1235,7 @@ var StaffDayAmountText = function(){
     sayText("For how many days do you expect to be absent from work?\n1) 1 day\n2) 2 days\n3) 3 days\n4) 4 days or more\n0) Cancel");
 };
 var StaffConfrimAbsenceText = function(name){
-    sayText("Thank you "+name+" for reporting your work absence. You will receive an SMS and email confirmation shortly with further instructions. We wish you well.");
+    sayText("Thank you "+name+" for reporting your work absence. You will receive an email confirmation shortly with further instructions. We wish you well.");
 };
 var StaffCallForAbsenceText = function(name){
     sayText("For absences of more than 3 days, notify your manager directly or an HR representative through the Staff Support Line at 800 720 377. We wish you well.");
