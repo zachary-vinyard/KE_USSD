@@ -791,6 +791,21 @@ var GetStaffDetails = function(payrollid){
     else {return false}
 }
 
+var StaffCreateRequest = function(payrollid,startday,amount){
+    var Table = project.getOrCreateDataTable("Staff_AbsenceRequest");
+    var startdaydesc = "Today";
+    if (startday == 2){startdaydesc = "Yesterday"}
+    else if (startday == 3){startdaydesc = "Tomorrow"}
+    var Row = Table.createRow({
+        vars: {
+            'payrollid':payrollid,
+            'startday':startdaydesc,
+            'amount': amount
+        }
+    });
+    Row.save();
+};
+
 //MAIN FUNCTIONS OR GENERIC TEXT
 var SplashMenuText = function (){
     if (GetLang()){sayText("Welcome to the OAF portal. Please enter the 8 digit account number you use for repayment\nPress 0 if you are not our client\n99) Swahili")}
@@ -2373,6 +2388,7 @@ addInputHandler('DayAmount', function(input) {
     if (input == 1 || input == 2 || input ==3){
         var amount = input;
         var StaffDetail = GetStaffDetails(state.vars.payrollid);
+        StaffCreateRequest (StaffDetail.payrollid, call.vars.DaySelect,amount);
         StaffConfrimAbsenceText(StaffDetail.name);
         StaffConfrimAbsenceEmail(StaffDetail.email, StaffDetail.name, call.vars.DaySelect, amount)
         // place holder for email to HR
