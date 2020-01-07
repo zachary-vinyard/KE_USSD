@@ -1939,15 +1939,23 @@ addInputHandler("JITEAccNum", function(JITE_AccNum){
                 var NotBanned = true
                 if (GetBalance(JITE_client, LastSeason)>0){NotBanned = false}
                 if (client.DistrictId == JITE_client.DistrictId && NotBanned){
-                    if (JITE_client.BalanceHistory[0].SeasonName != CurrentSeasonName){
+                    if (JITE_client.BalanceHistory[0].SeasonName == CurrentSeasonName){
+                        if (JITE_client.BalanceHistory[0].TotalCredit== 0){
+                            state.vars.JITE_client = JSON.stringify(TrimClientJSON(JITE_client));
+                            var JITEOrderOptions = JITEGetOrderOptions()
+                            JITEBundleSelectText(JITEOrderOptions);
+                            promptDigits("JITEBundleSelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
+                        }
+                        else{
+                            JITEAccNumAlreadyEnrolledText();
+                            promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
+                        }
+                    }
+                    else {
                         state.vars.JITE_client = JSON.stringify(TrimClientJSON(JITE_client));
                         var JITEOrderOptions = JITEGetOrderOptions()
                         JITEBundleSelectText(JITEOrderOptions);
                         promptDigits("JITEBundleSelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
-                    }
-                    else{
-                        JITEAccNumAlreadyEnrolledText();
-                        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
                     }
                 }
                 else {
