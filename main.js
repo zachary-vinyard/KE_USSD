@@ -1887,7 +1887,7 @@ addInputHandler("JITTUConfirm", function(Confirm){
 });
 addInputHandler("ContinueToJITTUBundleSelect", function(Continue) {
     LogSessionID();
-    InteractionCounter("ContinueToJITTUBundleSelect");
+    InteractionCounter("ContJITTUBundle");
     if(Continue =="2") {
         JIT_client = JSON.parse(state.vars.JIT_client);
         var orderoverview = JITTURetrieveOrders(JIT_client.AccountNumber);
