@@ -835,7 +835,7 @@ var MainMenuText = function (client){
         if (GetLang()){MenuText = MenuText + "\n5) Prepayment amount"}
         else {MenuText = MenuText + "\n5) Malipo ya kufuzu"}
     }
-    if (FAWActive(client.DistrictName&&EnrolledAndQualified(client))){
+    if (FAWActive(client.DistrictName)&&EnrolledAndQualified(client)){
         if (GetLang()){MenuText = MenuText + "\n6) FAW Pesticide Order"}
         else {MenuText = MenuText + "\n6) Kuagiza dawa ya FAW"}
     }
