@@ -2255,7 +2255,7 @@ addInputHandler("SHSCodeContinue", function(Input){
 });
 addInputHandler("ReportIssueOrBackToMain", function(Input){
     LogSessionID();
-    InteractionCounter("ReportIssueOrBackToMain");
+    InteractionCounter("ReportIssue");
     state.vars.issuetype = "SHS";
     var client = JSON.parse(state.vars.client);
     if (Input =="99"){
