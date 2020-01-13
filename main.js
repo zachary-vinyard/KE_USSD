@@ -1912,7 +1912,7 @@ addInputHandler("ViewJITOrder", function(JITTU_accNum) {
         promptDigits("MainMenu", {submitOnHash: true, maxDigits: 8, timeout: 5});
     }
     else{
-        var JITTUOrders = RetrieveJITTUOrders(JITTU_accNum);
+        var JITTUOrders = JITTURetrieveOrders(JITTU_accNum);
         console.log("Order overview: "+JSON.stringify(JITTUOrders));
         JITTUShowOrdersText(JITTUOrders);
         promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
