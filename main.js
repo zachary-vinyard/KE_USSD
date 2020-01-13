@@ -649,7 +649,7 @@ var SHSShowCode = function(client,serial,type){
     }
 };
 var CallBackCreate = function(client,phonenumberCB,type){
-    var CEEmail = "kenya.help@oneacrefund.org";
+    var CEEmail = "support@oneacrefund-ke.zendesk.com";
     var Subject = "Call back requested for: "+type;
     var Body = "call back number: "+ phonenumberCB+ "\n issuetype: "+ type+ "\n Account number: "+ client.AccountNumber+ "\nDistrict: "+ client.DistrictName+ "\nSite: "+ client.SiteName+ "\nGroup: "+ client.GroupName;
     sendEmail(CEEmail, Subject, Body);
