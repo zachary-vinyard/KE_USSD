@@ -840,8 +840,8 @@ var MainMenuText = function (client){
         else {MenuText = MenuText + "\n6) Kuagiza dawa ya FAW"}
     }
     if (SHSActive(client.DistrictName)){
-        if (GetLang()){MenuText = MenuText + "\n7) SHS"}
-        else {MenuText = MenuText + "\n7) SHS"}
+        if (GetLang()){MenuText = MenuText + "\n7) Solar"}
+        else {MenuText = MenuText + "\n7) Sola"}
     }
     if (GetLang()){MenuText = MenuText + "\n8) Insurance"}
     else {MenuText = MenuText + "\n8) Bima"}
