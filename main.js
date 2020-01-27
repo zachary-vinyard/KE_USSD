@@ -1702,7 +1702,7 @@ addInputHandler("FOLocSite", function(Site) {
         if (LocValid){
             
             var table = project.getOrCreateDataTable("FO_Locator_Sites");
-            cursor = table.queryRows({vars: {'SiteID': id}});
+            cursor = table.queryRows({vars: {'SiteID': SiteID}});
             cursor.limit(1);
             var row = cursor.next();
             state.vars.FOName = row.vars.FOName;
