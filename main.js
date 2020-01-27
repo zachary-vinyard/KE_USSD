@@ -2200,6 +2200,7 @@ addInputHandler("SolarMenu", function(Menu){
     }
 });
 addInputHandler("SerialRegister", function(Serial){
+    console.log(Serial);
     LogSessionID();
     InteractionCounter("SerialRegister");
     var client = JSON.parse(state.vars.client);
