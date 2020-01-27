@@ -1707,8 +1707,11 @@ addInputHandler("FOLocSite", function(Site) {
             var row = cursor.next();
             state.vars.FOName = row.vars.FOName;
             state.vars.FOPN = row.vars.FOPhoneNumber;
-             FOLocatorConfirmText();
-             promptDigits("FOLocConfrim", {submitOnHash: true, maxDigits: 2, timeout: 5});
+            console.log("Results found and put in state:")
+            console.log(state.vars.FOName);
+            console.log(state.vars.FOPN);
+            FOLocatorConfirmText();
+            promptDigits("FOLocConfrim", {submitOnHash: true, maxDigits: 2, timeout: 5});
         }
         else {
             FOLocatorSiteText(state.vars.LocMenu);
