@@ -1700,7 +1700,7 @@ addInputHandler("FOLocSite", function(Site) {
             }
         }
         if (LocValid){
-            
+            console.log("Seaching site with ID "+SiteID);
             var table = project.getOrCreateDataTable("FO_Locator_Sites");
             cursor = table.queryRows({vars: {'SiteID': SiteID}});
             cursor.limit(1);
