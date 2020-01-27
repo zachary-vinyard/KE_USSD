@@ -1646,9 +1646,7 @@ addInputHandler("FOLocWard", function(Ward) {
                 var Location = {
                     "Menu": menu,
                     "Name": SiteRow.vars.sitename,
-                    "ID": SiteRow.vars.siteid,
-                    "FOPN": SiteRow.vars.fophonenumber,
-                    "FOName":  SiteRow.vars.foname
+                    "ID": SiteRow.vars.siteid
                 };
                 SiteArray.push(Location); 
             }
@@ -1684,6 +1682,7 @@ addInputHandler("FOLocSite", function(Site) {
     InteractionCounter("FOLocSite");
     var LocValid = false;
     LocationNotKnown(Site);
+    var SiteID = "";
     var NextSelected = FOLocatorNextSelect(Site);
     if (state.vars.MenuNext && NextSelected){
         var LocMenu = LocationNext();
@@ -1694,16 +1693,26 @@ addInputHandler("FOLocSite", function(Site) {
         SiteArray = JSON.parse(state.vars.LocArray);
         for (var i = 0; i < SiteArray.length; i++) {
             if (SiteArray[i].Menu == Site) {
+                SiteID = SiteArray[i].ID;
                 LocValid = true;
-                state.vars.FOPN = SiteArray[i].FOPN;
-                state.vars.FOName = SiteArray[i].FOName;
                 state.vars.SiteName = SiteArray[i].Name;
                 state.vars.FOLocatorSiteName = SiteArray[i].Name;
             }
         }
         if (LocValid){
-             FOLocatorConfirmText();
-             promptDigits("FOLocConfrim", {submitOnHash: true, maxDigits: 2, timeout: 5});
+            console.log("Seaching site with ID "+SiteID);
+            var table = project.getOrCreateDataTable("FO_Locator_Sites");
+            cursor = table.queryRows({vars: {'siteid': SiteID}});
+            cursor.limit(1);
+            console.log("Number of results: "+cursor.count())
+            var row = cursor.next();
+            state.vars.FOName = row.vars.foname;
+            state.vars.FOPN = row.vars.fophonenumber;
+            console.log("Results found and put in state:")
+            console.log(state.vars.FOName);
+            console.log(state.vars.FOPN);
+            FOLocatorConfirmText();
+            promptDigits("FOLocConfrim", {submitOnHash: true, maxDigits: 2, timeout: 5});
         }
         else {
             FOLocatorSiteText(state.vars.LocMenu);
