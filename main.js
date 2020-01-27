@@ -2157,7 +2157,7 @@ addInputHandler("SolarMenu", function(Menu){
         if (EnrolledAndQualified(client)){
             if (SHSValidateReg(client, CurrentSeasonName)){
                 SHSSerialText();
-                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 20, timeout: 5});
             }
             else {
                 SHSRegNoOrderText();
