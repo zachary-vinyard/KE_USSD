@@ -1706,8 +1706,8 @@ addInputHandler("FOLocSite", function(Site) {
             cursor.limit(1);
             console.log("Number of results: "+cursor.count())
             var row = cursor.next();
-            state.vars.FOName = row.vars.FOName;
-            state.vars.FOPN = row.vars.FOPhoneNumber;
+            state.vars.FOName = row.vars.foname;
+            state.vars.FOPN = row.vars.fophonenumber;
             console.log("Results found and put in state:")
             console.log(state.vars.FOName);
             console.log(state.vars.FOPN);
