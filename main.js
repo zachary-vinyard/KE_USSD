@@ -1219,9 +1219,16 @@ var FOLocatorConfirmSuccessText = function(){
     if (GetLang()){sayText("One Acre Fund contact person details have been sent to you. If you have any questions call our toll free line at 080 0723355")}
     else {sayText("Utapokea ujumbe kutoka One Acre Fund ulio na jina na nambari ya simu ya agenti wetu. Piga simu ukiwa na swali lolote kwa 080 0723355")}
 };
-var FOLocatorFarmerSMS = function(){
-    if (GetLang()){return state.vars.FOName+ " is your One Acre Fund contact person. Their number is "+state.vars.FOPN}
-    else {return state.vars.FOName+" ndiye afisa wa nyanjani wa One Acre Fund. Nambari yake ya simu ni "+state.vars.FOPN}
+var FOLocatorFarmerSMS = function(id){
+    var table = project.getOrCreateDataTable("FO_Locator_Sites");
+    cursor = table.queryRows({vars: {'SiteID': id}});
+    cursor.limit(1);
+    var row = cursor.next();
+    var FOName = row.vars.FOName;
+    var FOPN = row.vars.FOPhoneNumber;
+
+    if (GetLang()){return FOName+ " is your One Acre Fund contact person. Their number is "+FOPN}
+    else {return FOName+" ndiye afisa wa nyanjani wa One Acre Fund. Nambari yake ya simu ni "+FOPN}
 };
 var FOLocatorFOSMS = function(){
     return "Tafadahli wasiliana na "+contact.phone_number+ " ili ajiandikishe na One Acre Fund";
@@ -1646,9 +1653,7 @@ addInputHandler("FOLocWard", function(Ward) {
                 var Location = {
                     "Menu": menu,
                     "Name": SiteRow.vars.sitename,
-                    "ID": SiteRow.vars.siteid,
-                    "FOPN": SiteRow.vars.fophonenumber,
-                    "FOName":  SiteRow.vars.foname
+                    "ID": SiteRow.vars.siteid
                 };
                 SiteArray.push(Location); 
             }
@@ -1684,6 +1689,7 @@ addInputHandler("FOLocSite", function(Site) {
     InteractionCounter("FOLocSite");
     var LocValid = false;
     LocationNotKnown(Site);
+    var SiteID = "";
     var NextSelected = FOLocatorNextSelect(Site);
     if (state.vars.MenuNext && NextSelected){
         var LocMenu = LocationNext();
@@ -1694,15 +1700,14 @@ addInputHandler("FOLocSite", function(Site) {
         SiteArray = JSON.parse(state.vars.LocArray);
         for (var i = 0; i < SiteArray.length; i++) {
             if (SiteArray[i].Menu == Site) {
+                SiteID = SiteArray[i].ID;
                 LocValid = true;
-                state.vars.FOPN = SiteArray[i].FOPN;
-                state.vars.FOName = SiteArray[i].FOName;
                 state.vars.SiteName = SiteArray[i].Name;
                 state.vars.FOLocatorSiteName = SiteArray[i].Name;
             }
         }
         if (LocValid){
-             FOLocatorConfirmText();
+             FOLocatorConfirmText(SiteID);
              promptDigits("FOLocConfrim", {submitOnHash: true, maxDigits: 2, timeout: 5});
         }
         else {
