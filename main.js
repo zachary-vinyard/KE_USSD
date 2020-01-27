@@ -1704,6 +1704,7 @@ addInputHandler("FOLocSite", function(Site) {
             var table = project.getOrCreateDataTable("FO_Locator_Sites");
             cursor = table.queryRows({vars: {'siteid': SiteID}});
             cursor.limit(1);
+            console.log("Number of results: "+cursor.count())
             var row = cursor.next();
             state.vars.FOName = row.vars.FOName;
             state.vars.FOPN = row.vars.FOPhoneNumber;
