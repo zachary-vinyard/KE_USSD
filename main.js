@@ -555,9 +555,13 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
     }
 };
 var SHSRegThisSeason= function(accountnumber){
+    var OrderTable = project.getOrCreateDataTable("SHS Orders");    
+    OrderCursor = OrderTable.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
+    var OrderCount = OrderCursor.count();
+    
     var table = project.getOrCreateDataTable("SHS Serial Numbers");
     Cursor = table.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
-    if(Cursor.count() > 0){return true}
+    if(Cursor.count() >= OrderCount){return true}
     else {return false}
 };
 var SHSRegSerial = function(client,serialnumber, type){
