@@ -558,9 +558,11 @@ var SHSRegThisSeason= function(accountnumber){
     var OrderTable = project.getOrCreateDataTable("SHS Orders");    
     OrderCursor = OrderTable.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
     var OrderCount = OrderCursor.count();
+    console.log("Allowed orders this season: "+OrderCount)
     
     var table = project.getOrCreateDataTable("SHS Serial Numbers");
     Cursor = table.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
+    console.log("Registered SHSes this season: "+Cursor.count())
     if(Cursor.count() >= OrderCount){return true}
     else {return false}
 };
