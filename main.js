@@ -523,8 +523,19 @@ var SHSValidateReg = function(client, seasonname){
         OrderCursor = OrdersTable.queryRows({vars: {'accountnumber': client.AccountNumber, 'season': seasonname}});
         if (OrderCursor.count()>0){
             valid = true;
-            var row = OrderCursor.next();
-            state.vars.SHS_Type = row.vars.shs_type;
+            state.vars.SHS_Type = "";
+            while (OrderCursor.hasNext()) {
+                var row = OrderCursor.next();
+                if (state.vars.SHS_Type == ""){
+                    state.vars.SHS_Type = row.vars.shs_type;
+                    console.log("First setting of SHS type, set to: "+ state.vars.SHS_Type)
+                }
+                else if (state.vars.SHS_Type != row.vars.shs_type){
+                    state.vars.SHS_Type = "";
+                    console.log("Setting SHS type to BLANK because of multiple options")
+                    break;
+                }
+            }
         }
     return valid;
 };
@@ -545,7 +556,7 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
     };
     var status = "";
     var Serialtable = project.getOrCreateDataTable("SHS Serial Numbers");
-    if (typeof type === "undefined"){
+    if (typeof type === "undefined" || type == ""){
         SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber, 'season': CurrentSeasonName}});
         return CheckStatus(SerialCursor);
     }
@@ -2237,6 +2248,10 @@ addInputHandler("SerialRegister", function(Serial){
                 SHSRegOtherText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
+            // elf if (Multiple found {
+                // Prompt user with selection 
+            //}
+
             else {
                 SHSSerialNotValidText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
