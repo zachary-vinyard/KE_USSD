@@ -523,8 +523,18 @@ var SHSValidateReg = function(client, seasonname){
         OrderCursor = OrdersTable.queryRows({vars: {'accountnumber': client.AccountNumber, 'season': seasonname}});
         if (OrderCursor.count()>0){
             valid = true;
-            var row = OrderCursor.next();
-            state.vars.SHS_Type = row.vars.shs_type;
+            var SHSTypeArray = [];
+            state.vars.SHS_Type = "";
+            while (OrderCursor.hasNext()) {
+                var row = OrderCursor.next();
+
+                if (SHSTypeArray.indexOf(row.vars.shs_type) == -1){
+                    SHSTypeArray.push(row.vars.shs_type);
+                    console.log(JSON.stringify(SHSTypeArray));
+                }
+                else{console.log("Skip")}
+                state.vars.SHS_Type = JSON.stringify(SHSTypeArray);
+            }
         }
     return valid;
 };
@@ -534,18 +544,22 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
         if (SerialCursor.count() === 0){status = "NotFound"}
         else if (SerialCursor.count() === 1){
             SerialRow = SerialCursor.next();
+            state.vars.SHS_Type = SerialRow.vars.shs_type
             if (SerialRow.vars.assigned){
                 if (SerialRow.vars.accountnumber == accountnumber){status = "RegAccNum"}
                 else {status = "RegOther"}
             }
-            else {status = "NotReg"}
+            else {
+                status = "NotReg";
+            }
         }
         else {status = "MultipleFound"}
+        console.log("Status for SHS serial number validate: "+status);
         return status;
     };
     var status = "";
     var Serialtable = project.getOrCreateDataTable("SHS Serial Numbers");
-    if (typeof type === "undefined"){
+    if (typeof type === "undefined" || type == ""){
         SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber, 'season': CurrentSeasonName}});
         return CheckStatus(SerialCursor);
     }
@@ -555,9 +569,15 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
     }
 };
 var SHSRegThisSeason= function(accountnumber){
+    var OrderTable = project.getOrCreateDataTable("SHS Orders");    
+    OrderCursor = OrderTable.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
+    var OrderCount = OrderCursor.count();
+    console.log("Allowed orders this season: "+OrderCount)
+    
     var table = project.getOrCreateDataTable("SHS Serial Numbers");
     Cursor = table.queryRows({vars: {'accountnumber': accountnumber, 'season': CurrentSeasonName}});
-    if(Cursor.count() > 0){return true}
+    console.log("Registered SHSes this season: "+Cursor.count())
+    if(Cursor.count() >= OrderCount){return true}
     else {return false}
 };
 var SHSRegSerial = function(client,serialnumber, type){
@@ -573,7 +593,7 @@ var SHSRegSerial = function(client,serialnumber, type){
     };
     var Serialtable = project.getOrCreateDataTable("SHS Serial Numbers");
     if (typeof type === "undefined"){
-        SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber, }});
+        SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber}});
         RegSerial(SerialCursor, client);
     }
     else {
@@ -930,8 +950,19 @@ var SHSRegOtherText= function(){
     else {sayText("Taa hii Imesajiliwa na mkulima mwingine\n9) Rudi Hadi Mwanzo\n99) Kwa shida Yoyote")}
 };
 var SHSTypeText = function(){
-    if (GetLang()){sayText("Select type:\n1) Sun King Home\n2) Biolite home\n9) Back to main")}
-    else {sayText("Chagua aina ya taa:\n1) Sun King Home\n2) Biolite Home System\n9) Rudi Hadi Mwanzo")}
+
+    var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
+    var SHSTypeMenuText = ""
+    var i = 0;
+
+    while (i < SHSTypeArray.length) {
+        var MenuNumber = i+1;
+        SHSTypeMenuText = SHSTypeMenuText + MenuNumber+") "+ SHSTypeArray[i]+"\n";
+        i++;
+      }
+
+    if (GetLang()){sayText("Select type:\n"+SHSTypeMenuText+"9) Back to main")}
+    else {sayText("Chagua aina ya taa:\n"+SHSTypeMenuText+"9) Rudi Hadi Mwanzo")}
 };
 var SHSSerialNotValidText = function(){
     if (GetLang()){sayText("Invalid input.\nPlease enter the serial number.\n9) Back to main\n99) Report issue")}
@@ -2157,7 +2188,7 @@ addInputHandler("SolarMenu", function(Menu){
         if (EnrolledAndQualified(client)){
             if (SHSValidateReg(client, CurrentSeasonName)){
                 SHSSerialText();
-                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 20, timeout: 5});
             }
             else {
                 SHSRegNoOrderText();
@@ -2200,6 +2231,7 @@ addInputHandler("SolarMenu", function(Menu){
     }
 });
 addInputHandler("SerialRegister", function(Serial){
+    console.log(Serial);
     LogSessionID();
     InteractionCounter("SerialRegister");
     var client = JSON.parse(state.vars.client);
@@ -2213,7 +2245,19 @@ addInputHandler("SerialRegister", function(Serial){
         promptDigits("CallBackPN", {submitOnHash: true, maxDigits: 10, timeout: 5});
     }
     else {
-        var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+        state.vars.Serial = Serial;
+        var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
+        var CountSHSType = SHSTypeArray.length;
+        console.log("Number of SHS type options: "+CountSHSType);
+        if (CountSHSType == 1 ){
+            console.log("Checking Serial number including SHS type");
+            var Status = SHSValidateSerial (client.AccountNumber,Serial, SHSTypeArray[0]);
+        }
+        else{
+            console.log("Checking Serial number disregarding SHS type");
+            var Status = SHSValidateSerial (client.AccountNumber,Serial);
+        }
+
         if(Status == "RegAccNum"){
             SHSShowCode(client,Serial,state.vars.SHS_Type);
         }
@@ -2230,6 +2274,13 @@ addInputHandler("SerialRegister", function(Serial){
                 SHSRegOtherText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
+
+            else if (Status == "MultipleFound"){
+                SHSTypeText();
+                promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+            }
+
+
             else {
                 SHSSerialNotValidText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
@@ -2237,6 +2288,68 @@ addInputHandler("SerialRegister", function(Serial){
         }
     }
 });
+
+addInputHandler("SerialType", function(Type){
+    LogSessionID();
+    InteractionCounter("SerialRegister");
+    var client = JSON.parse(state.vars.client);
+    if (Type =="9"){
+        MainMenuText (client);
+        promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        var Serial = state.vars.Serial;
+
+        //1) Test if Provided input is valid
+        var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
+        var i = Type - 1;
+        var Valid = false
+        console.log("Array length: "+ SHSTypeArray.length);
+        console.log("Menu selected: "+Type);
+        console.log("i: "+i);
+
+        if (i<= SHSTypeArray.length-1){
+            state.vars.SHS_Type = SHSTypeArray[i]
+            console.log("Selection valid, SHS type: "+ state.vars.SHS_Type);
+            Valid = true;
+        }
+
+        if (Valid){
+            //2) Run Validate and register code
+            var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+            if(Status == "RegAccNum"){
+                SHSShowCode(client,Serial,state.vars.SHS_Type);
+            }
+            else if (SHSRegThisSeason(client.AccountNumber)){
+                SHSSerialNotValidText();
+                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+            }
+            else {
+                if(Status == "NotReg"){
+                    SHSRegSerial(client,Serial,state.vars.SHS_Type);
+                    SHSShowCode(client,Serial,state.vars.SHS_Type);
+                }
+                else if(Status == "RegOther"){
+                    SHSRegOtherText();
+                    promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+                else if (Status == "MultipleFound"){
+                    SHSTypeText();
+                    promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+                else {
+                    SHSSerialNotValidText();
+                    promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+            }
+        }
+        else {
+            SHSTypeText();
+            promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+        }
+    }
+});
+
 addInputHandler("SerialCode", function(Serial){
     LogSessionID();
     InteractionCounter("SerialCode");
