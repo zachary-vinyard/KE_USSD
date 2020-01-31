@@ -950,8 +950,17 @@ var SHSRegOtherText= function(){
     else {sayText("Taa hii Imesajiliwa na mkulima mwingine\n9) Rudi Hadi Mwanzo\n99) Kwa shida Yoyote")}
 };
 var SHSTypeText = function(){
-    if (GetLang()){sayText("Select type:\n1) Sun King Home\n2) Biolite home\n9) Back to main")}
-    else {sayText("Chagua aina ya taa:\n1) Sun King Home\n2) Biolite Home System\n9) Rudi Hadi Mwanzo")}
+
+    var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
+    var SHSTypeMenuText = ""
+
+    while (i < SHSTypeArray.length) {
+        i++;
+        SHSTypeMenuText = SHSTypeMenuText + i+") "+ SHSTypeArray[i]+"\n";
+      }
+
+    if (GetLang()){sayText("Select type:\n"+SHSTypeMenuText+"9) Back to main")}
+    else {sayText("Chagua aina ya taa:\n"+SHSTypeMenuText+"9) Rudi Hadi Mwanzo")}
 };
 var SHSSerialNotValidText = function(){
     if (GetLang()){sayText("Invalid input.\nPlease enter the serial number.\n9) Back to main\n99) Report issue")}
@@ -2264,7 +2273,7 @@ addInputHandler("SerialRegister", function(Serial){
             }
 
             else if (Status == "MultipleFound"){
-                sayText("Place holder for selecting SHS type");
+                SHSTypeText();
                 promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
 
