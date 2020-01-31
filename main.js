@@ -2308,7 +2308,7 @@ addInputHandler("SerialType", function(Type){
         console.log("Menu selected: "+Type);
         console.log("i: "+i);
 
-        if (i>0 && i<= SHSTypeArray.length){
+        if (i<= SHSTypeArray.length-1){
             state.vars.SHS_Type = SHSTypeArray[i]
             console.log("Selection valid, SHS type: "+ state.vars.SHS_Type);
         }
