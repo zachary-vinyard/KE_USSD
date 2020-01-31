@@ -532,7 +532,7 @@ var SHSValidateReg = function(client, seasonname){
                     SHSTypeArray.push(row.vars.shs_type);
                     console.log(JSON.stringify(SHSTypeArray));
                 }
-                else{console.log("Skip")
+                else{console.log("Skip")}
                 
                 //if (state.vars.SHS_Type == ""){
                 //    state.vars.SHS_Type = row.vars.shs_type;
