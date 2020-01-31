@@ -544,13 +544,13 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
         if (SerialCursor.count() === 0){status = "NotFound"}
         else if (SerialCursor.count() === 1){
             SerialRow = SerialCursor.next();
+            state.vars.SHS_Type = SerialRow.vars.shs_type
             if (SerialRow.vars.assigned){
                 if (SerialRow.vars.accountnumber == accountnumber){status = "RegAccNum"}
                 else {status = "RegOther"}
             }
             else {
                 status = "NotReg";
-                state.vars.SHS_Type = SerialRow.vars.shs_type;
             }
         }
         else {status = "MultipleFound"}
