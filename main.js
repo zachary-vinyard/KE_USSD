@@ -533,16 +533,6 @@ var SHSValidateReg = function(client, seasonname){
                     console.log(JSON.stringify(SHSTypeArray));
                 }
                 else{console.log("Skip")}
-                
-                //if (state.vars.SHS_Type == ""){
-                //    state.vars.SHS_Type = row.vars.shs_type;
-                //    console.log("First setting of SHS type, set to: "+ state.vars.SHS_Type)
-                //}
-                //else if (state.vars.SHS_Type != row.vars.shs_type){
-                //    state.vars.SHS_Type = "";
-                //    console.log("Setting SHS type to BLANK because of multiple options")
-                //    break;
-                //}
                 state.vars.SHS_Type = JSON.stringify(SHSTypeArray);
             }
         }
@@ -561,6 +551,7 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
             else {status = "NotReg"}
         }
         else {status = "MultipleFound"}
+        console.log("Status for SHS serial number validate: "+status);
         return status;
     };
     var status = "";
@@ -599,7 +590,7 @@ var SHSRegSerial = function(client,serialnumber, type){
     };
     var Serialtable = project.getOrCreateDataTable("SHS Serial Numbers");
     if (typeof type === "undefined"){
-        SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber, }});
+        SerialCursor = Serialtable.queryRows({vars: {'serial_number' :serialnumber}});
         RegSerial(SerialCursor, client);
     }
     else {
