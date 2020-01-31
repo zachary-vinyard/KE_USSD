@@ -525,13 +525,14 @@ var SHSValidateReg = function(client, seasonname){
             valid = true;
             var SHSTypeArray = [];
             state.vars.SHS_Type = "";
-            var j = 1;
             while (OrderCursor.hasNext()) {
                 var row = OrderCursor.next();
-                if (SHSTypeArray.findIndex(row.vars.shs_type)>0){
+
+                if (SHSTypeArray.indexOf(row.vars.shs_type) == -1){
                     SHSTypeArray.push(row.vars.shs_type);
-                    j++;
+                    console.log(JSON.stringify(SHSTypeArray));
                 }
+                else{console.log("Skip")
                 
                 //if (state.vars.SHS_Type == ""){
                 //    state.vars.SHS_Type = row.vars.shs_type;
