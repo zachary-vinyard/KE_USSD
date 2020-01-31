@@ -953,10 +953,12 @@ var SHSTypeText = function(){
 
     var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
     var SHSTypeMenuText = ""
+    var i = 0;
 
     while (i < SHSTypeArray.length) {
-        i++;
+        var MenuNumber = i+1;
         SHSTypeMenuText = SHSTypeMenuText + i+") "+ SHSTypeArray[i]+"\n";
+        i++;
       }
 
     if (GetLang()){sayText("Select type:\n"+SHSTypeMenuText+"9) Back to main")}
