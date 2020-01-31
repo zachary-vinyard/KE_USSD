@@ -2311,6 +2311,7 @@ addInputHandler("SerialType", function(Type){
         if (i<= SHSTypeArray.length-1){
             state.vars.SHS_Type = SHSTypeArray[i]
             console.log("Selection valid, SHS type: "+ state.vars.SHS_Type);
+            Valid = true;
         }
 
         if (Valid){
