@@ -2303,9 +2303,17 @@ addInputHandler("SerialType", function(Type){
         //1) Test if Provided input is valid
         var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
         var i = Type - 1;
+        var Valid = false
+        console.log("Array length: "+ SHSTypeArray.length);
+        console.log("Menu selected: "+Type);
+        console.log("i: "+i);
+
         if (i>0 && i<= SHSTypeArray.length){
             state.vars.SHS_Type = SHSTypeArray[i]
+            console.log("Selection valid, SHS type: "+ state.vars.SHS_Type);
+        }
 
+        if (Valid){
             //2) Run Validate and register code
             var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
             if(Status == "RegAccNum"){
