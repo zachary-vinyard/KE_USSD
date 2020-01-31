@@ -523,18 +523,26 @@ var SHSValidateReg = function(client, seasonname){
         OrderCursor = OrdersTable.queryRows({vars: {'accountnumber': client.AccountNumber, 'season': seasonname}});
         if (OrderCursor.count()>0){
             valid = true;
+            var SHSTypeArray = [];
             state.vars.SHS_Type = "";
+            var j = 1;
             while (OrderCursor.hasNext()) {
                 var row = OrderCursor.next();
-                if (state.vars.SHS_Type == ""){
-                    state.vars.SHS_Type = row.vars.shs_type;
-                    console.log("First setting of SHS type, set to: "+ state.vars.SHS_Type)
+                if (SHSTypeArray.findIndex()>0){
+                    SHSTypeArray.push(row.vars.shs_type);
+                    j++;
                 }
-                else if (state.vars.SHS_Type != row.vars.shs_type){
-                    state.vars.SHS_Type = "";
-                    console.log("Setting SHS type to BLANK because of multiple options")
-                    break;
-                }
+                
+                //if (state.vars.SHS_Type == ""){
+                //    state.vars.SHS_Type = row.vars.shs_type;
+                //    console.log("First setting of SHS type, set to: "+ state.vars.SHS_Type)
+                //}
+                //else if (state.vars.SHS_Type != row.vars.shs_type){
+                //    state.vars.SHS_Type = "";
+                //    console.log("Setting SHS type to BLANK because of multiple options")
+                //    break;
+                //}
+                state.vars.SHS_Type = JSON.stringify(SHSTypeArray);
             }
         }
     return valid;
@@ -2231,7 +2239,15 @@ addInputHandler("SerialRegister", function(Serial){
         promptDigits("CallBackPN", {submitOnHash: true, maxDigits: 10, timeout: 5});
     }
     else {
-        var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+        var SHSTypeArray = state.vars.SHS_Type);
+        var CountSHSType = SHSTypeArray.length;
+        if (CountSHSType == 1 ){
+            var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+        }
+        else{
+            var Status = SHSValidateSerial (client.AccountNumber,Serial);
+        }
+
         if(Status == "RegAccNum"){
             SHSShowCode(client,Serial,state.vars.SHS_Type);
         }
@@ -2248,9 +2264,12 @@ addInputHandler("SerialRegister", function(Serial){
                 SHSRegOtherText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
-            // elf if (Multiple found {
-                // Prompt user with selection 
-            //}
+
+            else if (Status == "MultipleFound"){
+                // Show list of types linked to account
+                promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+            }
+
 
             else {
                 SHSSerialNotValidText();
@@ -2259,6 +2278,11 @@ addInputHandler("SerialRegister", function(Serial){
         }
     }
 });
+
+addInputHandler("SerialType", function(Type){
+    // Receive SHS type
+});
+
 addInputHandler("SerialCode", function(Serial){
     LogSessionID();
     InteractionCounter("SerialCode");
