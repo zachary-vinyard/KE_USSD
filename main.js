@@ -2245,6 +2245,7 @@ addInputHandler("SerialRegister", function(Serial){
         promptDigits("CallBackPN", {submitOnHash: true, maxDigits: 10, timeout: 5});
     }
     else {
+        state.vars.Serial = Serial;
         var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
         var CountSHSType = SHSTypeArray.length;
         console.log("Number of SHS type options: "+CountSHSType);
@@ -2289,7 +2290,55 @@ addInputHandler("SerialRegister", function(Serial){
 });
 
 addInputHandler("SerialType", function(Type){
-    // Receive SHS type
+    LogSessionID();
+    InteractionCounter("SerialRegister");
+    var client = JSON.parse(state.vars.client);
+    if (Type =="9"){
+        MainMenuText (client);
+        promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        var Serial = state.vars.Serial;
+
+        //1) Test if Provided input is valid
+        var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
+        var i = Type - 1;
+        if (i>0 && i<= SHSTypeArray.length){
+            state.vars.SHS_Type = SHSTypeArray[i]
+
+            //2) Run Validate and register code
+            var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+            if(Status == "RegAccNum"){
+                SHSShowCode(client,Serial,state.vars.SHS_Type);
+            }
+            else if (SHSRegThisSeason(client.AccountNumber)){
+                SHSSerialNotValidText();
+                promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+            }
+            else {
+                if(Status == "NotReg"){
+                    SHSRegSerial(client,Serial,state.vars.SHS_Type);
+                    SHSShowCode(client,Serial,state.vars.SHS_Type);
+                }
+                else if(Status == "RegOther"){
+                    SHSRegOtherText();
+                    promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+                else if (Status == "MultipleFound"){
+                    SHSTypeText();
+                    promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+                else {
+                    SHSSerialNotValidText();
+                    promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
+                }
+            }
+        }
+        else {
+            SHSTypeText();
+            promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+        }
+    }
 });
 
 addInputHandler("SerialCode", function(Serial){
