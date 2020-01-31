@@ -957,7 +957,7 @@ var SHSTypeText = function(){
 
     while (i < SHSTypeArray.length) {
         var MenuNumber = i+1;
-        SHSTypeMenuText = SHSTypeMenuText + i+") "+ SHSTypeArray[i]+"\n";
+        SHSTypeMenuText = SHSTypeMenuText + MenuNumber+") "+ SHSTypeArray[i]+"\n";
         i++;
       }
 
