@@ -2231,12 +2231,12 @@ addInputHandler("SerialRegister", function(Serial){
         promptDigits("CallBackPN", {submitOnHash: true, maxDigits: 10, timeout: 5});
     }
     else {
-        var SHSTypeArray = state.vars.SHS_Type;
+        var SHSTypeArray = JSON.parse(state.vars.SHS_Type);
         var CountSHSType = SHSTypeArray.length;
         console.log("Number of SHS type options: "+CountSHSType);
         if (CountSHSType == 1 ){
             console.log("Checking Serial number including SHS type");
-            var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
+            var Status = SHSValidateSerial (client.AccountNumber,Serial, SHSTypeArray[0]);
         }
         else{
             console.log("Checking Serial number disregarding SHS type");
