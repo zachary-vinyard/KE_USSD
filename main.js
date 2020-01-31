@@ -2234,9 +2234,11 @@ addInputHandler("SerialRegister", function(Serial){
         var SHSTypeArray = state.vars.SHS_Type;
         var CountSHSType = SHSTypeArray.length;
         if (CountSHSType == 1 ){
+            console.log("Checking Serial number including SHS type");
             var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
         }
         else{
+            console.log("Checking Serial number disregarding SHS type");
             var Status = SHSValidateSerial (client.AccountNumber,Serial);
         }
 
