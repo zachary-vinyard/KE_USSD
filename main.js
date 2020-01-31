@@ -548,7 +548,10 @@ var SHSValidateSerial = function(accountnumber,serialnumber, type){
                 if (SerialRow.vars.accountnumber == accountnumber){status = "RegAccNum"}
                 else {status = "RegOther"}
             }
-            else {status = "NotReg"}
+            else {
+                status = "NotReg";
+                state.vars.SHS_Type = SerialRow.vars.shs_type;
+            }
         }
         else {status = "MultipleFound"}
         console.log("Status for SHS serial number validate: "+status);
