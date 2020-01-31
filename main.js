@@ -2266,7 +2266,7 @@ addInputHandler("SerialRegister", function(Serial){
             }
 
             else if (Status == "MultipleFound"){
-                // Show list of types linked to account
+                sayText("Place holder for selecting SHS type");
                 promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
 
