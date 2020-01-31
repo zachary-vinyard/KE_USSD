@@ -528,7 +528,7 @@ var SHSValidateReg = function(client, seasonname){
             var j = 1;
             while (OrderCursor.hasNext()) {
                 var row = OrderCursor.next();
-                if (SHSTypeArray.findIndex()>0){
+                if (SHSTypeArray.findIndex(row.vars.shs_type)>0){
                     SHSTypeArray.push(row.vars.shs_type);
                     j++;
                 }
