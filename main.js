@@ -2239,7 +2239,7 @@ addInputHandler("SerialRegister", function(Serial){
         promptDigits("CallBackPN", {submitOnHash: true, maxDigits: 10, timeout: 5});
     }
     else {
-        var SHSTypeArray = state.vars.SHS_Type);
+        var SHSTypeArray = state.vars.SHS_Type;
         var CountSHSType = SHSTypeArray.length;
         if (CountSHSType == 1 ){
             var Status = SHSValidateSerial (client.AccountNumber,Serial, state.vars.SHS_Type);
