@@ -266,7 +266,7 @@ var EnrolledAndQualified = function (client){
     var arrayLength = client.BalanceHistory.length;
     var Valid = false;
     for (var i = 0; i < arrayLength; i++) {
-        if (client.BalanceHistory[i].SeasonName ==CurrentSeasonName){    
+        if (client.BalanceHistory[i].SeasonName == CurrentSeasonName){    
             if(client.BalanceHistory[i].TotalCredit> 0){Valid = true}
         }
     }
@@ -2266,7 +2266,12 @@ addInputHandler("SerialRegister", function(Serial){
         if(Status == "RegAccNum"){
             SHSShowCode(client,Serial,state.vars.SHS_Type);
         }
+        else if (Status == "MultipleFound"){
+            SHSTypeText();
+            promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
+        }
         else if (SHSRegThisSeason(client.AccountNumber)){
+            console.log("Not allowed to register more this season")
             SHSSerialNotValidText();
             promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
         }
@@ -2279,12 +2284,6 @@ addInputHandler("SerialRegister", function(Serial){
                 SHSRegOtherText();
                 promptDigits("SerialRegister", {submitOnHash: true, maxDigits: 10, timeout: 5});
             }
-
-            else if (Status == "MultipleFound"){
-                SHSTypeText();
-                promptDigits("SerialType", {submitOnHash: true, maxDigits: 10, timeout: 5});
-            }
-
 
             else {
                 SHSSerialNotValidText();
