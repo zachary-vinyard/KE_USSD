@@ -127,10 +127,16 @@ var ChangeLang = function (){
     contact.save();
 };
 var RosterClientVal = function (AccNum){
-    rosterAPI.verbose = true;
-    rosterAPI.dataTableAttach();
-    response = rosterAPI.authClient(AccNum,'KE');
-    return response;
+    console.log("Validating accountnumber length. Result: "+ AccNum.length);
+    if (AccNum.length == 8){
+        rosterAPI.verbose = true;
+        rosterAPI.dataTableAttach();
+        response = rosterAPI.authClient(AccNum,'KE');
+        return response;
+    }
+    else {
+        return false
+    }
 };
 var RosterClientGet = function (AccNum){
     rosterAPI.verbose = true;
@@ -614,7 +620,6 @@ var GetSHSDetails = function(accountnumber, serialnumber, type){
             return SerialReturn;
         }
         else {return "Not found"}
-
     };
     var Serialtable = project.getOrCreateDataTable("SHS Serial Numbers");
     if (typeof type === "undefined"){
