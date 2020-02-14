@@ -264,7 +264,7 @@ var FAWProcessCancel= function(accnum, CancelAmount){
     var rowcursor = table.queryRows({vars: {'accountnumber':accnum}});
     console.log("Retrieved row count: "+rowcursor.count())
     var ToCancelCount = CancelAmount;
-    var now = moment().format("LLLL");
+    var now = moment().format("L");
     while (rowcursor.hasNext() && ToCancelCount>0) {
         console.log("to cancel amount is "+ToCancelCount);
         var row = rowcursor.next();
