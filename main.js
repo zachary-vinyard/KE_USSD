@@ -242,11 +242,53 @@ var FAWOrdersPlaced = function (accnum){
     var table = project.getOrCreateDataTable("FAWOrders");
     var rowcursor = table.queryRows({vars: {'accountnumber':accnum}});
     var SumOrder = 0;
+    var CancelMaxTime = moment().subtract(5, 'days').format("X");
+    console.log("Max cancel time is"+CancelMaxTime);
+    state.vars.FAWAllowcancel = false;
+    state.vars.FAWCancelAmount = 0;
     while (rowcursor.hasNext()) {
         var row = rowcursor.next();
-        SumOrder = SumOrder + parseInt(row.vars.bundlequantity)}
+        console.log("Time created is: "+time_created);
+        if (row.time_created>CancelMaxTime){
+            state.vars.FAWAllowcancel = true;
+            state.vars.FAWCancelAmount = state.vars.FAWCancelAmount + row.vars.bundlequantity;
+        }
+        SumOrder = SumOrder + parseInt(row.vars.bundlequantity);
+    }
+    console.log("Allowed cancellation amount is: "+ state.vars.FAWCancelAmount);
     return SumOrder;
 };
+
+var FAWProcessCancel= function(accnum, CancelAmount){
+    var table = project.getOrCreateDataTable("FAWOrders");
+    var rowcursor = table.queryRows({vars: {'accountnumber':accnum}});
+    var ToCancelCount = CancelAmount;
+    var now = moment();
+    while (rowcursor.hasNext() && ToCancelCount>0) {
+        var row = rowcursor.next();
+        if (row.vars.bundlequantity == CancelAmount){
+            row.vars.accountnumber = row.vars.accountnumber + "Cancelled";
+            row.vars.changenote = "Cancelled on "+now;
+            ToCancelCount = 0;
+            break;
+        }
+        else if(row.vars.bundlequantity > CancelAmount){
+            var NewQuantity = row.vars.bundlequantity - CancelAmount;
+            row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
+            row.vars.bundlequantity = NewQuantity;
+            ToCancelCount = 0;
+            break;
+        }
+        else{
+            var NewQuantity = row.vars.bundlequantity - CancelAmount;
+            row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
+            row.vars.bundlequantity = NewQuantity;
+            ToCancelCount = ToCancelCount - row.vars.bundlequantity;
+        }
+    }
+};
+    
+
 var FAWCreateOrder = function(client, order){
     var table = project.getOrCreateDataTable("FAWOrders");
     var row = table.createRow({
@@ -995,10 +1037,21 @@ var SHSCodeSMS = function(shscode){
 };
 // FAW
 var FAWMaxOrderText = function(numberordered){
-    if (GetLang()){sayText("Sorry, you have already ordered "+numberordered+" pesticide bottles. You are not allowed to order more.\n1) Back to main")}
-    else {sayText("Samahani, umeshatuma ombi la chupa "+numberordered+" za dawa. Hauruhusiwi kuagiza zaidi\n1) Rudi mwanzo wa menu")}
+    
+    console.log("allowed to cancel: "+state.vars.FAWAllowcancel);
+    if(state.vars.FAWAllowcancel){
+        if (GetLang()){sayText("Sorry, you have already ordered "+numberordered+" pesticide bottles. You are not allowed to order more.\n9) Cancel order")}
+        else {sayText("Samahani, umeshatuma ombi la chupa "+numberordered+" za dawa. Hauruhusiwi kuagiza zaidi\n9) Cancel order")}
+    }
+    else{
+        if (GetLang()){sayText("Sorry, you have already ordered "+numberordered+" pesticide bottles. You are not allowed to order more.\n1) Back to main")}
+        else {sayText("Samahani, umeshatuma ombi la chupa "+numberordered+" za dawa. Hauruhusiwi kuagiza zaidi\n1) Rudi mwanzo wa menu")}
+    }
+
+    
 };
 var FAWOrderText = function(remainorders, alreadyordered){
+    console.log("allowed to cancel: "+state.vars.FAWAllowcancel);
     var FAWOrderText = "";
     for (var i = 0; i <remainorders; i++) {
         var MenuItem = i+1;
@@ -1006,10 +1059,21 @@ var FAWOrderText = function(remainorders, alreadyordered){
         if (GetLang()){FAWOrderText = FAWOrderText + MenuItem+ ") " +MenuItem + " Bottle - "+ Price+ "KSH\n"}
         else {FAWOrderText = FAWOrderText + MenuItem+ ") " +MenuItem + " Chupa - "+ Price+ "KSH\n"}
     }
-    if (GetLang()){sayText("Orders already placed: "+alreadyordered+ "\nSelect additional order:\n"+FAWOrderText+ "9) Back to main")}
-    else {sayText("Agizo ulizoshaweka: "+alreadyordered+ "\nChagua kiwango unachotaka kuagiza:\n"+FAWOrderText+ "9) Rudi mwanzo wa menu")}
-
+    if(state.vars.FAWAllowcancel){
+        if (GetLang()){sayText("Orders already placed: "+alreadyordered+ "\nSelect additional order:\n"+FAWOrderText+ "9) Cancel order")}
+        else {sayText("Agizo ulizoshaweka: "+alreadyordered+ "\nChagua kiwango unachotaka kuagiza:\n"+FAWOrderText+ "9) Cancel order")}
+    }
+    else{
+        if (GetLang()){sayText("Orders already placed: "+alreadyordered+ "\nSelect additional order:\n"+FAWOrderText+ "9) Back to main")}
+        else {sayText("Agizo ulizoshaweka: "+alreadyordered+ "\nChagua kiwango unachotaka kuagiza:\n"+FAWOrderText+ "9) Rudi mwanzo wa menu")}
+    }
 };
+
+var FAWCancelConfirmText = function(CancelAmount){
+    if (GetLang()){sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Back to main")}
+    else {sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Rudi mwanzo wa menu")}
+};
+
 var FAWConfirmText = function (order){
     var Credit = order* FAWUnitPrice;
     if (GetLang()){sayText("Please confirm of "+ order+ " bottles.\n1) Confirm\n9) Back to main")}
@@ -1020,6 +1084,12 @@ var FAWSuccessText = function (order){
     if (GetLang()){sayText("Thanks for ordering "+ order+ " bottles. Your FO will deliver the pesticide within a few weeks. An amount of "+Credit+" KSH will be added to your credit.\n9) Back to main")}
     else {sayText("Asante kwa kuagiza chupa "+ order+ ". Mwalimu wako atakuletea dawa zako kwa wiki chache zijazo. Kiasi cha KSH "+Credit+" kitaongezwa kwa mkopo wako.\n9) Rudi mwanzo wa menu")}
 };
+
+var FAWCancelOrderText = function(){
+    if (GetLang()){sayText("You are allowed to cancel "+ state.vars.FAWCancelAmount+ " bottles. How many whould you like to cancel?\n9) Back to main")}
+    else {sayText("You are allowed to cancel "+ state.vars.FAWCancelAmount+ " bottles. How many whould you like to cancel?\n9) Rudi mwanzo wa menu")}
+}
+
 var FAWSuccessSMS = function(order){
     var Credit = order* FAWUnitPrice;
     var SMStext = "";
@@ -1398,7 +1468,10 @@ addInputHandler("MainMenu", function(MainMenu) {
         }
         else {
             FAWMaxOrderText(OrdersPlaced);
-            promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
+            if (state.vars.FAWAllowcancel){
+                promptDigits("FAWCancel", {submitOnHash: true, maxDigits: 1, timeout: 5});
+            }
+            else{promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})}
         }
     }
     else if(MainMenu == 7 && SHSActive(client.DistrictName) ){
@@ -2146,8 +2219,15 @@ addInputHandler("FAWOrder", function(Order){
     InteractionCounter("FAWOrder");
     var client = JSON.parse(state.vars.client);
     if (Order =="9"){
-        MainMenuText (client);
-        promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+
+        if (state.vars.FAWAllowcancel){
+            FAWCancelOrderText();
+            promptDigits("FAWCancelAmount", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        }
+        else{
+            MainMenuText (client);
+            promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        }
     }
     else{
         if (isNaN(Order)){
@@ -2166,6 +2246,36 @@ addInputHandler("FAWOrder", function(Order){
         }
     }
 });
+
+addInputHandler("FAWCancel", function(){
+    LogSessionID();
+    InteractionCounter("FAWCancel");
+    FAWCancelOrderText();
+    promptDigits("FAWCancelAmount", {submitOnHash: true, maxDigits: 1, timeout: 5});
+});
+
+addInputHandler("FAWCancelAmount", function(input){
+    LogSessionID();
+    InteractionCounter("FAWCanAm");
+    var client = JSON.parse(state.vars.client);
+    var CancelAmount = input;
+    if (input =="9"){
+        MainMenuText (client);
+        promptDigits("MainMenu", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        if (input > 0 && input <= state.vars.FAWCancelAmount){
+            FAWProcessCancel(client.AccountNumber, CancelAmount);
+            FAWCancelConfirmText(CancelAmount);
+            promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        }
+        else{
+            FAWCancelOrderText();
+            promptDigits("FAWCancelAmount", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        }
+    }
+});
+
 addInputHandler("FAWConfirm", function(confirm){
     LogSessionID();
     InteractionCounter("FAWConfirm");
