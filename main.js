@@ -262,10 +262,13 @@ var FAWOrdersPlaced = function (accnum){
 var FAWProcessCancel= function(accnum, CancelAmount){
     var table = project.getOrCreateDataTable("FAWOrders");
     var rowcursor = table.queryRows({vars: {'accountnumber':accnum}});
+    console.log("Retrieved row count: "+rowcursor.count())
     var ToCancelCount = CancelAmount;
     var now = moment();
     while (rowcursor.hasNext() && ToCancelCount>0) {
+        consolelog("to cancel amount is "+ToCancelCount);
         var row = rowcursor.next();
+        console.log("Processing row with quanity "+row.vars.bundlequantity);
         if (row.vars.bundlequantity == CancelAmount){
             row.vars.accountnumber = row.vars.accountnumber + "Cancelled";
             row.vars.changenote = "Cancelled on "+now;
