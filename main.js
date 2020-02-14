@@ -251,7 +251,7 @@ var FAWOrdersPlaced = function (accnum){
         console.log("Time created is: "+row.time_created);
         if (row.time_created>CancelMaxTime){
             state.vars.FAWAllowcancel = true;
-            state.vars.FAWCancelAmount = number(state.vars.FAWCancelAmount) + number(row.vars.bundlequantity);
+            state.vars.FAWCancelAmount = Number(state.vars.FAWCancelAmount) + Number(row.vars.bundlequantity);
         }
         SumOrder = SumOrder + parseInt(row.vars.bundlequantity);
     }
