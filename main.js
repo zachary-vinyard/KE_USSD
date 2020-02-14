@@ -266,7 +266,7 @@ var FAWProcessCancel= function(accnum, CancelAmount){
     var ToCancelCount = CancelAmount;
     var now = moment();
     while (rowcursor.hasNext() && ToCancelCount>0) {
-        consolelog("to cancel amount is "+ToCancelCount);
+        console.log("to cancel amount is "+ToCancelCount);
         var row = rowcursor.next();
         console.log("Processing row with quanity "+row.vars.bundlequantity);
         if (row.vars.bundlequantity == CancelAmount){
