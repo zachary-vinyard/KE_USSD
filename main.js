@@ -261,7 +261,7 @@ var FAWOrdersPlaced = function (accnum){
 
 var FAWProcessCancel= function(accnum, CancelAmount){
     var table = project.getOrCreateDataTable("FAWOrders");
-    var rowcursor = table.queryRows({vars: {'accountnumber':accnum}});
+    var rowcursor = table.queryRows({sort_dir:"desc", vars: {'accountnumber':accnum}});
     console.log("Retrieved row count: "+rowcursor.count())
     var ToCancelCount = CancelAmount;
     var now = moment().format("L");
