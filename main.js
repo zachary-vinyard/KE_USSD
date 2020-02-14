@@ -270,6 +270,7 @@ var FAWProcessCancel= function(accnum, CancelAmount){
             row.vars.accountnumber = row.vars.accountnumber + "Cancelled";
             row.vars.changenote = "Cancelled on "+now;
             ToCancelCount = 0;
+            row.save;
             break;
         }
         else if(row.vars.bundlequantity > CancelAmount){
@@ -277,6 +278,7 @@ var FAWProcessCancel= function(accnum, CancelAmount){
             row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
             row.vars.bundlequantity = NewQuantity;
             ToCancelCount = 0;
+            row.save;
             break;
         }
         else{
@@ -284,6 +286,7 @@ var FAWProcessCancel= function(accnum, CancelAmount){
             row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
             row.vars.bundlequantity = NewQuantity;
             ToCancelCount = ToCancelCount - row.vars.bundlequantity;
+            row.save;
         }
     }
 };
