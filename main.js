@@ -248,7 +248,7 @@ var FAWOrdersPlaced = function (accnum){
     state.vars.FAWCancelAmount = 0;
     while (rowcursor.hasNext()) {
         var row = rowcursor.next();
-        console.log("Time created is: "+time_created);
+        console.log("Time created is: "+row.time_created);
         if (row.time_created>CancelMaxTime){
             state.vars.FAWAllowcancel = true;
             state.vars.FAWCancelAmount = state.vars.FAWCancelAmount + row.vars.bundlequantity;
