@@ -269,27 +269,27 @@ var FAWProcessCancel= function(accnum, CancelAmount){
         console.log("to cancel amount is "+ToCancelCount);
         var row = rowcursor.next();
         console.log("Processing row with quanity "+row.vars.bundlequantity);
-        if (row.vars.bundlequantity == CancelAmount){
+        if (row.vars.bundlequantity == ToCancelCount){
             row.vars.accountnumber = row.vars.accountnumber + "Cancelled";
             row.vars.changenote = "Cancelled on "+now;
             ToCancelCount = 0;
-            row.save;
+            row.save();
             break;
         }
-        else if(row.vars.bundlequantity > CancelAmount){
-            var NewQuantity = row.vars.bundlequantity - CancelAmount;
+        else if(row.vars.bundlequantity > ToCancelCount){
+            var NewQuantity = row.vars.bundlequantity - ToCancelCount;
             row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
             row.vars.bundlequantity = NewQuantity;
             ToCancelCount = 0;
-            row.save;
+            row.save();
             break;
         }
         else{
-            var NewQuantity = row.vars.bundlequantity - CancelAmount;
+            var NewQuantity = row.vars.bundlequantity - ToCancelCount;
             row.vars.changenote = "Quantity changed from "+row.vars.bundlequantity+" to "+ NewQuantity+" on "+now;
             row.vars.bundlequantity = NewQuantity;
             ToCancelCount = ToCancelCount - row.vars.bundlequantity;
-            row.save;
+            row.save();
         }
     }
 };
