@@ -2789,12 +2789,12 @@ addInputHandler('StaffIssueLowlevel', function(input) {
     if (input>0 && input<= state.vars.MaxAnswer){
         state.vars.IssueLevel3Ans = input;
         StaffIssueSuccessText();
-        console.log()
-        console.log()
-        console.log()
-        console.log()
-        console.log()
-        console.log()
+
+        console.log(state.vars.IssueLevel1)
+        console.log(state.vars.IssueLevel2Ques)
+        console.log(state.vars.IssueLevel2Ans)
+        console.log(state.vars.IssueLevel3Ques)
+        console.log(state.vars.IssueLevel3Ans)
         // Create Ticket in Zendesk
         hangUp();
     }
