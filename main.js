@@ -1047,7 +1047,7 @@ var FAWMaxOrderText = function(numberordered){
     console.log("allowed to cancel: "+state.vars.FAWAllowcancel);
     if(state.vars.FAWAllowcancel){
         if (GetLang()){sayText("Sorry, you have already ordered "+numberordered+" pesticide bottles. You are not allowed to order more.\n9) Cancel order")}
-        else {sayText("Samahani, umeshatuma ombi la chupa "+numberordered+" za dawa. Hauruhusiwi kuagiza zaidi\n9) Cancel order")}
+        else {sayText("Samahani, umeshatuma ombi la chupa "+numberordered+" za dawa. Hauruhusiwi kuagiza zaidi\n9) Futa agizo")}
     }
     else{
         if (GetLang()){sayText("Sorry, you have already ordered "+numberordered+" pesticide bottles. You are not allowed to order more.\n1) Back to main")}
@@ -1067,7 +1067,7 @@ var FAWOrderText = function(remainorders, alreadyordered){
     }
     if(state.vars.FAWAllowcancel){
         if (GetLang()){sayText("Orders already placed: "+alreadyordered+ "\nSelect additional order:\n"+FAWOrderText+ "9) Cancel order")}
-        else {sayText("Agizo ulizoshaweka: "+alreadyordered+ "\nChagua kiwango unachotaka kuagiza:\n"+FAWOrderText+ "9) Cancel order")}
+        else {sayText("Agizo ulizoshaweka: "+alreadyordered+ "\nChagua kiwango unachotaka kuagiza:\n"+FAWOrderText+ "9) Futa agizo")}
     }
     else{
         if (GetLang()){sayText("Orders already placed: "+alreadyordered+ "\nSelect additional order:\n"+FAWOrderText+ "9) Back to main")}
@@ -1350,11 +1350,69 @@ var HospitalRegionText = function(){
 
 //Staff Menu
 var StaffMenuText = function(){
-    sayText("Staff Menu\n1) Report Unexpected Absence");
+    sayText("1) Report Unexpected Absence\n2)Report Tablet issue \n3) Site enrollment, site repayment and  delivery issues");
 };
 var StaffPayrollText = function(){
     sayText("Please enter you 5 digit payroll ID");
 };
+var StaffTabletIssueText = function(){
+    Text = "Affected part?\n1) FS App\n2) ME App\n3) G suite\n4)Tablet hardware\n5) Tablet system down CE support";
+    state.vars.IssueLevel2Ques = Text;
+    sayText(Text);
+};
+var StaffFSAppIssueText = function(){
+    Text = "1) Log in Issue\n2)Wrong/Missing Clients/Payments\n3) CRPR Data Not Updating\n4)Configure with google\n5)Displays error message";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+var StaffMEAppIssueText = function(){
+    Text = "1) Incorrect Input Bundles/Pricing\n2) App missing\n3) Displays error message\n4)Cannot select site/district)\n5)Cannot Sync/no Button";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+var StaffGSuiteIssueText = function(){
+    Text = "1) G Suite Gmail/Chrome/Google play services stopping\n2) Forms requiring permission to open\n3) Gmail password reset\n4) Not receiving emails";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+var StaffTabletHardwareIssueText = function(){
+    Text = "1) Tablet/accessory physical Damage\n2) Tablet Won't Charge or power\n3) Stolen tablet/tablet accessory";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+var StaffTabletDownIssueText = function(){
+    Text = "1) Need report via email\n2) FO/FM Promoted \n3) Data bundle Expired/Runs Out\n4) Tablet Network Issues\n5) FO/FM Transferring\n6) Have no tablet";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+
+var StaffRosterIssueText = function(){
+    Text = "What Roster issue are you experiencing?\n1) Site repayments issue\n2) Site delivery issue\n3) Site enrollment issue";
+    state.vars.IssueLevel2Ques = Text;
+    sayText(Text);
+};
+
+var StaffSiteRepayIssueText = function(){
+    Text = "1) Track missing payments\n2)Payment transfer";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+
+var StaffSiteDeliveryIssueText = function(){
+    Text = "1) Enrolled clients missing on IDS\n2) Missing inputs\n3) Wrong inputs";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+
+var StaffTabletRosterText = function(){
+    Text = "1) Enrollment app not syncing\n2) Wrongly banned group\n3) Wrongly dropped group\n4) GL change reques";
+    state.vars.IssueLevel3Ques = Text;
+    sayText(Text);
+};
+
+var StaffIssueSuccessText = function(){
+    sayText("Thank you for reaching out, you will be contacted by our customer representative via this phone number, be available on call.")
+}
 var StaffDaySelectText = function(){
     sayText("For which day are you reporting your first day of absense?\n1) Today\n2) Tomorrow\n3) Yesterday\n0) Cancel");
 };
@@ -2600,13 +2658,22 @@ addInputHandler('StaffPayRoll', function(input) {
     }
 });
 
-
 addInputHandler('StaffMenu', function(input) {
     LogSessionID();
     InteractionCounter('StaffMenu');
     if (input == 1){
         StaffDaySelectText();
         promptDigits("DaySelect", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else if (input == 2){
+        state.vars.MaxAnswer = 5;
+        StaffTabletIssueText();
+        promptDigits("StaffTabletIssue", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else if (input == 3){
+        state.vars.MaxAnswer = 3;
+        StaffRosterIssueText();
+        promptDigits("StaffRosterIssue", {submitOnHash: true, maxDigits: 1, timeout: 5});
     }
     else{
         StaffMenuText();
@@ -2657,3 +2724,83 @@ addInputHandler('DayAmount', function(input) {
     }
 });
 
+addInputHandler('StaffTabletIssue', function(input) {
+    LogSessionID();
+    InteractionCounter('StaffTabIssue');
+    if (input>0 && input<= state.vars.MaxAnswer){
+        state.vars.IssueLevel1 = "Tablet Issue";
+        state.vars.IssueLevel2Ans = input;
+        if (input == 1){
+            state.vars.MaxAnswer = 5;
+            StaffFSAppIssueText();
+        }
+        else if (input == 2){
+            state.vars.MaxAnswer = 5;
+            StaffMEAppIssueText();
+        }
+        else if (input == 3){
+            state.vars.MaxAnswer = 4;
+            StaffGSuiteIssueText();
+        }
+        else if (input == 4){
+            state.vars.MaxAnswer = 3;
+            StaffTabletHardwareIssueText();
+        }
+        else if (input == 5){
+            state.vars.MaxAnswer = 6;
+            StaffTabletDownIssueText();
+        }
+        promptDigits("StaffIssueLowlevel", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        StaffTabletIssueText();
+        promptDigits("StaffTabletIssue", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+})
+
+addInputHandler('StaffRosterIssue', function(input) {
+    LogSessionID();
+    InteractionCounter('StaffRosIssue');
+    if (input>0 && input<= state.vars.MaxAnswer){
+        state.vars.IssueLevel1 = "Roster Issue";
+        state.vars.IssueLevel2Ans = input;
+        if (input == 1){
+            state.vars.MaxAnswer = 2;
+            StaffSiteRepayIssueText();
+        }
+        else if (input == 2){
+            state.vars.MaxAnswer = 3;
+            StaffSiteDeliveryIssueText();
+        }
+        else if (input == 3){
+            state.vars.MaxAnswer = 4;
+            StaffTabletRosterText();
+        }
+        promptDigits("StaffIssueLowlevel", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+    else{
+        StaffRosterIssueText();
+        promptDigits("StaffRosterIssue", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+})
+addInputHandler('StaffIssueLowlevel', function(input) {
+    LogSessionID();
+    InteractionCounter('StaffTabLowIssue');
+    if (input>0 && input<= state.vars.MaxAnswer){
+        state.vars.IssueLevel3Ans = input;
+        StaffIssueSuccessText();
+
+        console.log(state.vars.IssueLevel1)
+        console.log(state.vars.IssueLevel2Ques)
+        console.log(state.vars.IssueLevel2Ans)
+        console.log(state.vars.IssueLevel3Ques)
+        console.log(state.vars.IssueLevel3Ans)
+        // Create Ticket in Zendesk
+        hangUp();
+    }
+    else{
+        sayText(state.vars.IssueLevel3Ques);
+        promptDigits("StaffIssueLowlevel", {submitOnHash: true, maxDigits: 1, timeout: 5});
+    }
+
+})
