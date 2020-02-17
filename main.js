@@ -727,6 +727,12 @@ var CallBackCreate = function(client,phonenumberCB,type){
     var Body = "call back number: "+ phonenumberCB+ "\n issuetype: "+ type+ "\n Account number: "+ client.AccountNumber+ "\nDistrict: "+ client.DistrictName+ "\nSite: "+ client.SiteName+ "\nGroup: "+ client.GroupName;
     sendEmail(CEEmail, Subject, Body);
 };
+
+var StaffCallBackCreate = function(phonenumberCB,type,Body){
+    var CEEmail = "support@oneacrefund-ke.zendesk.com";
+    var Subject = "Call back requested for: "+type;
+    sendEmail(CEEmail, Subject, Body);
+};
 var LocationNext = function (){
     LocArray = JSON.parse(state.vars.LocArray);
     console.log(state.vars.LocArray);
@@ -1393,7 +1399,7 @@ var StaffRosterIssueText = function(){
 };
 
 var StaffSiteRepayIssueText = function(){
-    Text = "1) Track missing payments\n2)Payment transfer";
+    Text = "1) Track missing payments\n2) Payment transfer";
     state.vars.IssueLevel3Ques = Text;
     sayText(Text);
 };
@@ -2790,12 +2796,13 @@ addInputHandler('StaffIssueLowlevel', function(input) {
         state.vars.IssueLevel3Ans = input;
         StaffIssueSuccessText();
 
-        console.log(state.vars.IssueLevel1)
-        console.log(state.vars.IssueLevel2Ques)
-        console.log(state.vars.IssueLevel2Ans)
-        console.log(state.vars.IssueLevel3Ques)
-        console.log(state.vars.IssueLevel3Ans)
-        // Create Ticket in Zendesk
+
+        var Body = "Staff call back request on phonenumber: "+contact.phone_number+": \nIssue type: "+state.vars.IssueLevel1+"\n\n"+state.vars.IssueLevel2Ques+ "\n Answer: "+state.vars.IssueLevel2Ans+"\n\n"+state.vars.IssueLevel3Ques+ "\n Answer: "+state.vars.IssueLevel3Ans;
+        console.log(contact.phone_number);
+        console.log(state.vars.IssueLevel1);
+        console.log(Body);
+
+        //StaffCallBackCreate(contact.phone_number,state.vars.IssueLevel1,Body);
         hangUp();
     }
     else{
