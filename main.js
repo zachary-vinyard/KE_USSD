@@ -2795,14 +2795,11 @@ addInputHandler('StaffIssueLowlevel', function(input) {
     if (input>0 && input<= state.vars.MaxAnswer){
         state.vars.IssueLevel3Ans = input;
         StaffIssueSuccessText();
-
-
         var Body = "Staff call back request on phonenumber: "+contact.phone_number+": \nIssue type: "+state.vars.IssueLevel1+"\n\n"+state.vars.IssueLevel2Ques+ "\n Answer: "+state.vars.IssueLevel2Ans+"\n\n"+state.vars.IssueLevel3Ques+ "\n Answer: "+state.vars.IssueLevel3Ans;
         console.log(contact.phone_number);
         console.log(state.vars.IssueLevel1);
         console.log(Body);
-
-        //StaffCallBackCreate(contact.phone_number,state.vars.IssueLevel1,Body);
+        StaffCallBackCreate(contact.phone_number,state.vars.IssueLevel1,Body);
         hangUp();
     }
     else{
