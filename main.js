@@ -1082,8 +1082,9 @@ var FAWOrderText = function(remainorders, alreadyordered){
 };
 
 var FAWCancelConfirmText = function(CancelAmount){
-    if (GetLang()){sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Back to main")}
-    else {sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Rudi mwanzo wa menu")}
+    var CancelPrice = Number(CancelAmount)*Number(FAWUnitPrice);
+    if (GetLang()){sayText("You have just cancelled "+CancelAmount+" bottles of pesticide of Kshs. "+CancelPrice+ "\n9) Back to main")}
+    else {sayText("Umefuta agizo la "+CancelAmount+"  ya dawa linaloyogharimu Kshs."+CancelPrice+ "\n9) Rudi mwanzo wa menu")}
 };
 
 var FAWConfirmText = function (order){
@@ -1103,6 +1104,7 @@ var FAWCancelOrderText = function(){
 }
 
 var FAWSuccessSMS = function(order){
+
     var Credit = order* FAWUnitPrice;
     var SMStext = "";
     if (GetLang()){SMStext = "Thanks for ordering "+ order+ " bottles. Your FO will deliver the pesticide within a few weeks. An amount of "+Credit+" KSH will be added to your credit."}
@@ -1114,6 +1116,11 @@ var FAWSuccessSMS = function(order){
         route_id: RouteIDPush,
         label_ids : [Label.id]
     });
+
+    var Subject = "FAW SMS info";
+    var Body =  SMStext+"\nCredit: "+Credit +"\norder: "+order+"\nPhonenumber: "+contact.phone_number+"\nRoute ID: "+RouteIDPush
+    sendEmail("tom.vranken@oneacrefund.org", Subject, Body);
+
 };
 // JIT TU
 var JITTUSiteLockedText = function(){
@@ -2351,10 +2358,10 @@ addInputHandler("FAWConfirm", function(confirm){
     InteractionCounter("FAWConfirm");
     var client = JSON.parse(state.vars.client);
     if (confirm == "1"){
-            FAWCreateOrder (client, state.vars.FAWOrder)
-            FAWSuccessText(state.vars.FAWOrder);
-            FAWSuccessSMS(state.vars.FAWOrder);
-            promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
+        FAWCreateOrder (client, state.vars.FAWOrder)
+        FAWSuccessText(state.vars.FAWOrder);
+        FAWSuccessSMS(state.vars.FAWOrder);
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5});
     }
     else if (confirm == "9"){
         MainMenuText (client);
