@@ -1082,8 +1082,9 @@ var FAWOrderText = function(remainorders, alreadyordered){
 };
 
 var FAWCancelConfirmText = function(CancelAmount){
-    if (GetLang()){sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Back to main")}
-    else {sayText("You have just cancelled "+CancelAmount+" bottles of pesticide\n9) Rudi mwanzo wa menu")}
+    var CancelPrice = Number(CancelAmount)*Number(FAWUnitPrice);
+    if (GetLang()){sayText("You have just cancelled "+CancelAmount+" bottles of pesticide of Kshs. "+CancelPrice+ "\n9) Back to main")}
+    else {sayText("Umefuta agizo la "+CancelAmount+"  ya dawa linaloyogharimu Kshs."+CancelPrice+ "\n9) Rudi mwanzo wa menu")}
 };
 
 var FAWConfirmText = function (order){
