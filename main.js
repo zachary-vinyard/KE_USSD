@@ -1100,7 +1100,7 @@ var FAWSuccessText = function (order){
 
 var FAWCancelOrderText = function(){
     if (GetLang()){sayText("You are allowed to cancel "+ state.vars.FAWCancelAmount+ " bottles. How many whould you like to cancel?\n9) Back to main")}
-    else {sayText("You are allowed to cancel "+ state.vars.FAWCancelAmount+ " bottles. How many whould you like to cancel?\n9) Rudi mwanzo wa menu")}
+    else {sayText("Unakubaliwa kufuta "+ state.vars.FAWCancelAmount+ " ya dawa. Ungependa kufuta agizo ngapi?\n9) Rudi mwanzo wa menu")}
 }
 
 var FAWSuccessSMS = function(order){
