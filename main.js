@@ -1110,6 +1110,11 @@ var FAWSuccessSMS = function(order){
     if (GetLang()){SMStext = "Thanks for ordering "+ order+ " bottles. Your FO will deliver the pesticide within a few weeks. An amount of "+Credit+" KSH will be added to your credit."}
     else {SMSText = "Asante kwa kuagiza chupa "+ order+ ". Mwalimu wako atakuletea dawa zako kwa wiki chache zijazo. Kiasi cha KSH "+Credit+" kitaongezwa kwa mkopo wako."}
     var Label = project.getOrCreateLabel("FAW Order Confirm");
+
+    var Subject = "FAW SMS info";
+    var Body =  SMStext+"\nCredit: "+Credit +"\norder: "+order+"\nPhonenumber: "+contact.phone_number+"\nRoute ID: "+RouteIDPush
+    sendEmail("tom.vranken@oneacrefund.org", Subject, Body);
+
     var sent_msg = project.sendMessage({
         content:  SMStext ,
         to_number:contact.phone_number,
@@ -1117,9 +1122,7 @@ var FAWSuccessSMS = function(order){
         label_ids : [Label.id]
     });
 
-    var Subject = "FAW SMS info";
-    var Body =  SMStext+"\nCredit: "+Credit +"\norder: "+order+"\nPhonenumber: "+contact.phone_number+"\nRoute ID: "+RouteIDPush
-    sendEmail("tom.vranken@oneacrefund.org", Subject, Body);
+
 
 };
 // JIT TU
