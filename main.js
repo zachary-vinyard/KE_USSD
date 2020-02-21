@@ -2309,7 +2309,7 @@ addInputHandler("FAWOrder", function(Order){
             FAWOrderText(state.vars.FAWRemaining);
             promptDigits("FAWOrder", {submitOnHash: true, maxDigits: 1, timeout: 5});
         }
-        else if (parseInt(Order)<=  parseInt(state.vars.FAWRemaining)){
+        else if (parseInt(Order)<=  parseInt(state.vars.FAWRemaining)&&parseInt(Order)>0){
             state.vars.FAWOrder = Order
             client = JSON.parse(state.vars.client);
             FAWConfirmText(Order);
