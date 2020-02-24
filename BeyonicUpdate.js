@@ -114,12 +114,12 @@ if (IntPNCol== IntPNContact){
             if (row.vars.UpdateReceived == "RETRYING"){
                 row.vars.UpdateReceived = "DONE";
                 row.vars.ColReqDoneTimeStamp = moment().format('X');
-                if (ErrorMes.vars.sendsms == 'true'){
+                if (ErrorMes.vars.sendsms == '1'){
                     SendErrorSMS(ErrorMes, ColReq.phonenumber);
                 }
             }
             else{
-                if (ErrorMes.vars.retry == 'true'){
+                if (ErrorMes.vars.retry == '1'){
                     row.vars.UpdateReceived = "RETRYING";
                     row.vars.ColReqRetryTimeStamp = moment().format('X');
                     // TriggerRetry(ColReq.metadata.accountNo, ColReq.amount, ColReq.phonenumber);
@@ -127,7 +127,7 @@ if (IntPNCol== IntPNContact){
                 else{
                     row.vars.UpdateReceived = "DONE";
                     row.vars.ColReqDoneTimeStamp = moment().format('X');
-                    if (ErrorMes.vars.sendsms == 'true'){
+                    if (ErrorMes.vars.sendsms == '1'){
                         SendErrorSMS(ErrorMes, ColReq.phonenumber);
                     }
                 }
