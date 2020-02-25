@@ -127,15 +127,20 @@ var ChangeLang = function (){
     contact.save();
 };
 var RosterClientVal = function (AccNum){
-    console.log("Validating accountnumber length. Result: "+ AccNum.length);
-    if (AccNum.length == 8){
-        rosterAPI.verbose = true;
-        rosterAPI.dataTableAttach();
-        response = rosterAPI.authClient(AccNum,'KE');
-        return response;
+    if (typeof AccNum === "undefined" || AccNum == ""){
+        return false;
     }
-    else {
-        return false
+    else{
+        console.log("Validating accountnumber length. Result: "+ AccNum.length);
+        if (AccNum.length == 8){
+            rosterAPI.verbose = true;
+            rosterAPI.dataTableAttach();
+            response = rosterAPI.authClient(AccNum,'KE');
+            return response;
+        }
+        else {
+            return false
+        }
     }
 };
 var RosterClientGet = function (AccNum){
@@ -211,9 +216,10 @@ var SiteLockVal = function(SiteName, DistrictName){
     else {return false}
 };
 var IsPrePayTrialDistrict = function (districtname){
-    districtname = districtname.toLowerCase();
-    if (districtname == "nyando" || districtname == "kipkelion" || districtname == "chwele"){return true}
-    else {return false}
+    return false;
+    //districtname = districtname.toLowerCase();
+    //if (districtname == "nyando" || districtname == "kipkelion" || districtname == "chwele"){return true}
+    //else {return false}
 };
 var GetPrepaymentAmount = function(client){
     ClientDistrict = client.DistrictName.toLowerCase();
