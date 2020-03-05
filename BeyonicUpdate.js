@@ -90,11 +90,12 @@ var SendErrorSMS = function (ErrorMesRow, PhoneNumber){
         Label_LNG = project.getOrCreateLabel("English");
         SMSContent = row.vars.sms_en
     }
-    var sent_msg = project.sendMessage({
-        content: SMSContent,
-        to_number: SMSPN,
-        label_ids: [Label_BGS_Error.id,Label_LNG.id],
-    });
+    console.log(SMSContent);
+    //var sent_msg = project.sendMessage({
+      //  content: SMSContent,
+        //to_number: SMSPN,
+        //label_ids: [Label_BGS_Error.id,Label_LNG.id],
+    //});
 }
 
 // START FLOW
