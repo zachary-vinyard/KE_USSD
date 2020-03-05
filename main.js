@@ -1614,6 +1614,15 @@ addInputHandler("PaymentAmount", function(PaymentAmount) {
     InteractionCounter("PaymentAmount");
     if (PaymentAmount >= 10 && PaymentAmount < 70000){
         client = JSON.parse(state.vars.client);
+
+        if (isNaN(parseInt(PaymentAmount))){
+            console.log("Skip trim, result is NaN");
+        }
+        else{
+            call.vars.PaymentAmount = parseInt(PaymentAmount);
+            console.log("trimmed payment amount to number");
+        }
+
         if (RosterColRequest (client.AccountNumber,PaymentAmount)){
             call.vars.ColStatus = "Success";
             PaymentSuccessText();
