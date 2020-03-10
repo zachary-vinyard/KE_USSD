@@ -59,7 +59,7 @@ var JITBundleOptions =[
     },
 ];
 var JITTUMaxOrders = 3;
-var FAWUnitPrice = 840;
+var FAWUnitPrice = 720;
 var FAWMaxOrders = 2;
 var StaffDistrict = "KENYA STAFF";
 // Setting global functions
