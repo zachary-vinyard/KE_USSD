@@ -956,7 +956,7 @@ var CheckBalanceMenuText = function (Overpaid,Season,Credit,Paid,Balance){
 };
 
 var CallCenterMenuText = function (){
-    if (GetLang()){sayText("1>Help on payment issues\n2) Help on solar activation\n3) Help on insurance issue\n4) Help on waranty issue\n5) General inquiry")}
+    if (GetLang()){sayText("1) Help on payment issues\n2) Help on solar activation\n3) Help on insurance issue\n4) Help on waranty issue\n5) General inquiry")}
     else {sayText("1) Usaidizi kuhusu fedha\n2) Usaidizi kuhusu sola\n3) Usaidizi wa bima/insurance\n4) Usaidizi wa dhamana/waranty\n5) Usaidizi wa kijumla")}
 };
 
