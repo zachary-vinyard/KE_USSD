@@ -915,7 +915,7 @@ var MainMenuText = function (client){
     //        if (GetLang()){MenuText = MenuText + "\n4) Enroll"}
     //        else {MenuText = MenuText + "\n4) Enroll"}
     //    }
-    }
+    //}
     if (IsPrePayTrialDistrict(client.DistrictName)){
         if (GetLang()){MenuText = MenuText + "\n5) Prepayment amount"}
         else {MenuText = MenuText + "\n5) Malipo ya kufuzu"}
