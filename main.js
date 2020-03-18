@@ -2844,6 +2844,7 @@ addInputHandler('StaffIssueLowlevel', function(input) {
 
 addInputHandler('CallCenterMenu', function(input) {
     LogSessionID();
+    var client = JSON.parse(state.vars.client);
     InteractionCounter('CallCenterMenu');
     if (input == 1){
         CallBackCreate(client,contact.phone_number, "payment issue");
