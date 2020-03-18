@@ -931,8 +931,8 @@ var MainMenuText = function (client){
     if (GetLang()){MenuText = MenuText + "\n8) Insurance"}
     else {MenuText = MenuText + "\n8) Bima"}
 
-    if (GetLang()){MenuText = MenuText + "\n9) Contact Call center"}
-    else {MenuText = MenuText + "\n9) Wasiliana na Huduma ya wateja"}
+    //if (GetLang()){MenuText = MenuText + "\n9) Contact Call center"}
+    //else {MenuText = MenuText + "\n9) Wasiliana na Huduma ya wateja"}
     
     if (GetLang()){MenuText =MenuText + "\n99) Swahili"}
     else {MenuText =MenuText + "\n99) English"}
