@@ -906,16 +906,16 @@ var MainMenuText = function (client){
     else {MenuText ="Chagua Huduma\n1) Fanya malipo\n2) Kuangalia salio"}
     var JITActive = true;
     var FAWActiveCheck = true;
-    if (IsGl(client.AccountNumber)){
-        if (IsJITTUDistrict(client.DistrictName)){
-            if (GetLang()){MenuText = MenuText + "\n3) Top Up"}
-            else {MenuText = MenuText + "\n3) Top Up"}
-        }
-        if (IsJITEDistrict(client.DistrictName)){
-            if (GetLang()){MenuText = MenuText + "\n4) Enroll"}
-            else {MenuText = MenuText + "\n4) Enroll"}
-        }
-    }
+    //if (IsGl(client.AccountNumber)){
+    //    if (IsJITTUDistrict(client.DistrictName)){
+    //        if (GetLang()){MenuText = MenuText + "\n3) Top Up"}
+    //        else {MenuText = MenuText + "\n3) Top Up"}
+    //    }
+    //    if (IsJITEDistrict(client.DistrictName)){
+    //        if (GetLang()){MenuText = MenuText + "\n4) Enroll"}
+    //        else {MenuText = MenuText + "\n4) Enroll"}
+    //    }
+    //}
     if (IsPrePayTrialDistrict(client.DistrictName)){
         if (GetLang()){MenuText = MenuText + "\n5) Prepayment amount"}
         else {MenuText = MenuText + "\n5) Malipo ya kufuzu"}
@@ -930,6 +930,9 @@ var MainMenuText = function (client){
     }
     if (GetLang()){MenuText = MenuText + "\n8) Insurance"}
     else {MenuText = MenuText + "\n8) Bima"}
+
+    //if (GetLang()){MenuText = MenuText + "\n9) Contact Call center"}
+    //else {MenuText = MenuText + "\n9) Wasiliana na Huduma ya wateja"}
     
     if (GetLang()){MenuText =MenuText + "\n99) Swahili"}
     else {MenuText =MenuText + "\n99) English"}
@@ -951,6 +954,12 @@ var CheckBalanceMenuText = function (Overpaid,Season,Credit,Paid,Balance){
     var BalanceInfo = "Balance: "+Balance+ "\nSeason: "+Season+ "\nCredit: "+Credit+ "\nPaid: "+Paid+ "\nOverpaid: "+Overpaid;
     call.vars.BalanceInfo = BalanceInfo;
 };
+
+var CallCenterMenuText = function (){
+    if (GetLang()){sayText("1) Help on payment issues\n2) Help on solar activation\n3) Help on insurance issue\n4) Help on waranty issue\n5) General inquiry")}
+    else {sayText("1) Usaidizi kuhusu fedha\n2) Usaidizi kuhusu sola\n3) Usaidizi wa bima/insurance\n4) Usaidizi wa dhamana/waranty\n5) Usaidizi wa kijumla")}
+};
+
 var PaymentSuccessText = function (){
     if (GetLang()){sayText("Please confirm the transaction by typing in your MPesa PIN in the pop up that will appear. Thank you")}
     else {sayText("Tafadhali thibitisha malipo yako kwa kubonyeza nambari yako ya siri ya Mpesa. Asante")}
@@ -976,7 +985,6 @@ var PrepaymentMenuText = function(prepayment, paid){
     }
     else{
         var Remaining = Math.max(0,prepayment - paid);
-        // You have paid KESXX. your prepayment balance to qualify is now KESXX
         if (GetLang()){sayText("You have paid KES"+paid +". Your prepayment balance to qualify is now KES "+Remaining+"\n1) Back to menu")}
         else {sayText("Umelipa KES"+paid +". Salio lako la malipo ya kufuzu ni KES "+Remaining+"\n1) Rudi kwenye menyu")}
     }
@@ -986,8 +994,8 @@ var CallMeBackText = function(){
     else {sayText("Tafadhali jibu kwa nambari ya simu utakayo pigiwa nayo.\n1) Kutumia nambari unayo tumia sasa\n9) Rudi hadi mwanzo")}
 };
 var CallMeBackConfirmText = function(){
-    if (GetLang()){sayText("Thank you for reaching out to CE an agent will call you back between 8am and 5pm.\n1) Back to menu")}
-    else {sayText("Asante kwa kutuma ombi lako kwetu. Mhudumu wetu atawasiliana nawe kati ya saa mbili asubuhi na saa kumi na moja jioni\n1) Rudi Hadi Mwanzo")}
+    if (GetLang()){sayText("You will contacted by our customer service representative within 48 hours. Do not switch off  this phone or place a duplicate request.")}
+    else {sayText("Utapokea simu kutoka kwa mhudumu wa one Acre Fund kwa muda wa masaa 48. Usizime simu hii wala kuwasilisha ombi zaidi ya mara moja.")}
 };
 var LoanNotRepaidText = function(season){
     if (GetLang()){sayText("your loan for "+season+" is not fully repaid\n1) Back to menu")}
@@ -1562,6 +1570,11 @@ addInputHandler("MainMenu", function(MainMenu) {
     else if(MainMenu == 8){
         InsuranceMenuText();
         promptDigits("InsuranceMenu", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+
+    else if (MainMenu == 9){
+        CallCenterMenuText();
+        promptDigits("CallCenterMenu", {submitOnHash: true, maxDigits: 1, timeout: 5})
     }
     else{
         var arrayLength = client.BalanceHistory.length;
@@ -2827,4 +2840,38 @@ addInputHandler('StaffIssueLowlevel', function(input) {
         promptDigits("StaffIssueLowlevel", {submitOnHash: true, maxDigits: 1, timeout: 5});
     }
 
+})
+
+addInputHandler('CallCenterMenu', function(input) {
+    LogSessionID();
+    InteractionCounter('CallCenterMenu');
+    if (input == 1){
+        CallBackCreate(client,contact.phone_number, "payment issue");
+        CallMeBackConfirmText();
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+    else if (input == 2){
+        CallBackCreate(client,contact.phone_number, "solar registration/activation");
+        CallMeBackConfirmText(); 
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+    else if (input == 3){
+        CallBackCreate(client,contact.phone_number, "Insurance Issue");
+        CallMeBackConfirmText();
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+    else if (input == 4){
+        CallBackCreate(client,contact.phone_number, "Warranty Issue");
+        CallMeBackConfirmText();
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+    else if (input == 5){
+        CallBackCreate(client,contact.phone_number, "general Issue");
+        CallMeBackConfirmText();
+        promptDigits("BackToMain", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
+    else {
+        CallCenterMenuText();
+        promptDigits("CallCenterMenu", {submitOnHash: true, maxDigits: 1, timeout: 5})
+    }
 })
