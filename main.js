@@ -732,7 +732,18 @@ var CallBackCreate = function(client,phonenumberCB,type){
     var Subject = "Call back requested for: "+type+" accountnumber :"+ client.AccountNumber;
     var Body = "call back number: "+ phonenumberCB+ "\n issuetype: "+ type+ "\nFull name: "+client.ClientName+"\n Account number: "+ client.AccountNumber+ "\nDistrict: "+ client.DistrictName+ "\nSite: "+ client.SiteName+ "\nGroup: "+ client.GroupName;
     sendEmail(CEEmail, Subject, Body);
-    sendEmail("global.business.operations@oneacrefund.org", Subject, Body);
+    var LocTable = project.getOrCreateDataTable("CallBackUUSD");
+    var Row = Table.createRow({
+        vars: {
+            'Accountnumber':client.AccountNumber,
+            'Type':type,
+            'Phonenumber': phonenumberCB,
+            'FullName':client.ClientName,
+            'DistrictName': client.DistrictName,
+            'SiteName': client.SiteName
+        }
+    });
+    Row.save();
 };
 
 var StaffCallBackCreate = function(phonenumberCB,type,Body){
