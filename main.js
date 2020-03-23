@@ -1,4 +1,4 @@
-// Setting global variables
+// Setting global variables!
 var rosterAPI = require('ext/Roster_v1_2_0/api');
 var MenuCount = 0;
 var MenuNext = false;
